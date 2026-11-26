@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RE Simulator — Modules 4, 5, 6 · OEC7012 Reliability Engineering (FCRIT)</title>
-<meta name="description" content="Interactive simulator for Reliability Engineering Modules 4-6: system reliability, maintainability and availability, FMECA, fault tree and event tree.">
+<title>RE Simulator — Modules 1–6 · OEC7012 Reliability Engineering (FCRIT)</title>
+<meta name="description" content="Interactive simulator for Reliability Engineering Modules 1-6: probability, reliability concepts, hazard models and Weibull, system reliability, maintainability and availability, FMECA, fault tree and event tree.">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -14,25 +14,55 @@
       <div class="logo">RE</div>
       <div>
         <h1>Reliability Engineering Simulator</h1>
-        <p>OEC7012 · Modules 4, 5, 6 · built from Dr. Tarapada Pyne's lectures (FCRIT Mechanical) · works offline</p>
+        <p>OEC7012 · Modules 1–6 · built from Dr. Tarapada Pyne's lectures (FCRIT Mechanical) · works offline</p>
       </div>
     </div>
     <nav class="tabs" id="tabs" role="tablist">
       <button class="tab-btn active" data-tab="guide">Start here</button>
+      <button class="tab-btn" data-tab="m1">M1 · Probability</button>
+      <button class="tab-btn" data-tab="m2">M2 · Reliability concepts</button>
+      <button class="tab-btn" data-tab="m3">M3 · Hazard models &amp; Weibull</button>
       <button class="tab-btn" data-tab="m4">M4 · System reliability</button>
       <button class="tab-btn" data-tab="m5">M5 · Maintainability &amp; availability</button>
       <button class="tab-btn" data-tab="m6">M6 · FMECA · FTA · ETA</button>
       <button class="tab-btn" data-tab="sheet">Formula sheet</button>
+      <button class="tab-btn" data-tab="pdf">PDF Notes</button>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <section class="tab active" id="tab-guide"></section>
+  <section class="tab" id="tab-m1"></section>
+  <section class="tab" id="tab-m2"></section>
+  <section class="tab" id="tab-m3"></section>
   <section class="tab" id="tab-m4"></section>
   <section class="tab" id="tab-m5"></section>
   <section class="tab" id="tab-m6"></section>
   <section class="tab" id="tab-sheet"></section>
+  <section class="tab" id="tab-pdf">
+    <article class="card">
+      <h2>PDF Notes — all-modules infographic guide <span class="chip lec">32 pages · A4</span></h2>
+      <p>The printable companion to this simulator: a visual, plain-words (Feynman-style) guide to <b>all six modules</b>, with the MSE questions tagged ★. Read it on the way in; use the simulator tabs to play with the numbers.</p>
+      <div class="row"><a class="btn fill" href="assets/RE_Infographics.pdf" target="_blank" rel="noopener" id="pdf-open">Open PDF in a new tab</a> <a class="btn" href="assets/RE_Infographics.pdf" download="Reliability_Engineering_All_Modules_Infographics.pdf" id="pdf-dl">Download PDF (1.1 MB)</a></div>
+      <div class="grid2">
+        <div class="box feyn"><b>What is inside</b><ul>
+          <li><b>p. 1</b> cover, notation used in class (h(t) = f/R, β / η, Ai / Aa / Ao), how the questions were chosen, sources</li>
+          <li><b>pp. 2–7</b> 2-mark rapid cards for Modules 1–6 (6 per module)</li>
+          <li><b>pp. 8–22</b> longer answers per module: Bayes and addition rules, bathtub curve, R/F/f/h, QC tools, Weibull, exponential and hazard, series / parallel, k-out-of-n, Markov, maintainability, availability, FMEA / FMECA, FTA, ETA</li>
+          <li><b>pp. 23–30</b> eight worked numericals (N1–N8) from the MSE solution and the lectures</li>
+          <li><b>p. 31</b> one-page mind map of all six modules · <b>p. 32</b> formula and keyword cheat sheet</li></ul></div>
+        <div class="box tip"><b>How it connects to the simulator</b><ul>
+          <li>N1 Venn / union → <a href="#m1-venn">1.1</a> · N2 exponential → <a href="#m3-exp">3.1</a> · N3 two missiles → <a href="#m4-rbd">4.1</a></li>
+          <li>Weibull β = 2, η = 1000 → <a href="#m3-wb">3.2</a> and <a href="#m3-wc">3.3</a> · bathtub → <a href="#m2-bt">2.6</a></li>
+          <li>Milling machine M(t) → 5.1 · uptimes 50, 30, 60, 46 d → 5.2 · FMECA / FTA / ETA → M6 tab</li></ul>
+          <span class="src">The PDF is a static document; if the simulator and PDF ever differ by a rounding digit, the simulator's preset checks on the Start-here tab are the ones verified in code.</span></div>
+      </div>
+      <object data="assets/RE_Infographics.pdf#view=FitH" type="application/pdf" class="pdfview" aria-label="Infographic PDF">
+        <div class="box warn"><b>Your browser can't show the PDF inside the page</b> (common on phones). Use the buttons above: <a href="assets/RE_Infographics.pdf" target="_blank" rel="noopener">Open / Download PDF</a>.</div>
+      </object>
+    </article>
+  </section>
 </main>
 
 <footer class="wrap foot">
@@ -40,7 +70,11 @@
 </footer>
 
 <script src="assets/core.js"></script>
+<script src="assets/stats.js"></script>
 <script src="assets/content.js"></script>
+<script src="assets/m1.js"></script>
+<script src="assets/m2.js"></script>
+<script src="assets/m3.js"></script>
 <script src="assets/m4.js"></script>
 <script src="assets/m5.js"></script>
 <script src="assets/m6.js"></script>

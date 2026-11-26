@@ -140,9 +140,10 @@ class Plot {
     }
     for (const s of this.series) {
       const pts = this.pointsOf(s); if (!pts.length) continue;
+      if (s.bars) { const hw = (s.bw || 0.8) / 2; g.fillStyle = s.color || '#2457d6'; g.globalAlpha = 0.78; for (const p of pts) { const x0 = X(p[0] - hw), x1 = X(p[0] + hw), y = Y(p[1]); g.fillRect(x0, y, Math.max(1, x1 - x0 - 1), Y(Math.max(0, o.ymin)) - y); } g.globalAlpha = 1; continue; }
       g.strokeStyle = s.color || '#2457d6'; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []);
       if (s.fill) { g.fillStyle = s.fill; g.beginPath(); g.moveTo(X(pts[0][0]), Y(0)); for (const p of pts) g.lineTo(X(p[0]), Y(p[1])); g.lineTo(X(pts[pts.length - 1][0]), Y(0)); g.closePath(); g.fill(); }
-      g.beginPath(); pts.forEach((p, i) => { const x = X(p[0]), y = Y(p[1]); if (i) { if (s.step) g.lineTo(x, Y(pts[i - 1][1])); g.lineTo(x, y); } else g.moveTo(x, y); }); g.stroke(); g.setLineDash([]);
+      if (!s.nolines) { g.beginPath(); pts.forEach((p, i) => { const x = X(p[0]), y = Y(p[1]); if (i) { if (s.step) g.lineTo(x, Y(pts[i - 1][1])); g.lineTo(x, y); } else g.moveTo(x, y); }); g.stroke(); } g.setLineDash([]);
       if (s.dots) { g.fillStyle = s.color; for (const p of pts) { g.beginPath(); g.arc(X(p[0]), Y(p[1]), 3.5, 0, 7); g.fill(); } }
     }
     g.restore();
