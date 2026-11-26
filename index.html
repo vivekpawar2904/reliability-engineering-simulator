@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RE Simulator — Modules 4, 5, 6 · OEC7012 Reliability Engineering (FCRIT)</title>
+<meta name="description" content="Interactive simulator for Reliability Engineering Modules 4-6: system reliability, maintainability and availability, FMECA, fault tree and event tree.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">RE</div>
+      <div>
+        <h1>Reliability Engineering Simulator</h1>
+        <p>OEC7012 · Modules 4, 5, 6 · built from Dr. Tarapada Pyne's lectures (FCRIT Mechanical) · works offline</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="guide">Start here</button>
+      <button class="tab-btn" data-tab="m4">M4 · System reliability</button>
+      <button class="tab-btn" data-tab="m5">M5 · Maintainability &amp; availability</button>
+      <button class="tab-btn" data-tab="m6">M6 · FMECA · FTA · ETA</button>
+      <button class="tab-btn" data-tab="sheet">Formula sheet</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="tab active" id="tab-guide"></section>
+  <section class="tab" id="tab-m4"></section>
+  <section class="tab" id="tab-m5"></section>
+  <section class="tab" id="tab-m6"></section>
+  <section class="tab" id="tab-sheet"></section>
+</main>
+
+<footer class="wrap foot">
+  <p><b>Honest labelling:</b> every card says <span class="chip lec">LECTURE</span> when the numbers are printed on Dr. Pyne's slides (or the MSE solution), and <span class="chip demo">DEMO</span> when the numbers are made up by me to let you play. Always write the teacher's formulas in the exam, not the simulator's output. Independent, two-state components are assumed everywhere unless a card says otherwise.</p>
+</footer>
+
+<script src="assets/core.js"></script>
+<script src="assets/content.js"></script>
+<script src="assets/m4.js"></script>
+<script src="assets/m5.js"></script>
+<script src="assets/m6.js"></script>
+<script src="assets/main.js"></script>
+</body>
+</html>
