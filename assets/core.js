@@ -62,6 +62,7 @@ const CH = {
   lec: '<span class="chip lec" title="numbers printed on the teacher\'s slides">LECTURE</span>',
   demo: '<span class="chip demo" title="numbers made up for practice">DEMO</span>',
   mse: '<span class="chip mse" title="from the SH 2026 mid-sem solution">MSE</span>',
+  tb: '<span class="chip pred" title="gap-fill from the textbooks (Kapur &amp; Lamberson, O\'Connor, Moubray) — the lectures are silent here">TEXTBOOK</span>',
   pred: '<span class="chip pred" title="syllabus topic, thin in the slides">SYLLABUS</span>'
 };
 

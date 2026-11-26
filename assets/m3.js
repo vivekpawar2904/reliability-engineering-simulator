@@ -14,7 +14,7 @@ const WQ = [
 ];
 
 root.innerHTML = `
-<div class="subnav"><a href="#m3-exp">3.1 Exponential &amp; MSE Q2c</a><a href="#m3-wb">3.2 Weibull explorer</a><a href="#m3-wc">3.3 Weibull calculator</a><a href="#m3-mr">3.4 Median-rank plotting</a><a href="#m3-hm">3.5 Hazard models</a><a href="#m3-gal">3.6 Other life distributions</a><a href="#m3-qz">3.7 Cheat sheet &amp; self-test</a></div>
+<div class="subnav"><a href="#m3-exp">3.1 Exponential &amp; MSE Q2c</a><a href="#m3-wb">3.2 Weibull explorer</a><a href="#m3-wc">3.3 Weibull calculator</a><a href="#m3-mr">3.4 Median-rank plotting</a><a href="#m3-hm">3.5 Hazard models</a><a href="#m3-gal">3.6 Other life distributions</a><a href="#m3-qz">3.7 Cheat sheet &amp; self-test</a><a href="#m3-gam">3.8 Gamma function</a></div>
 
 ${card('m3-exp', '3.1', 'Exponential distribution — constant hazard (MSE Q2c)', `
  <div class="box feyn"><b>🧒 Plain words:</b> The exponential says "an item is exactly as likely to fail in the next hour whether it is new or old": no memory, no ageing. That is the <b>useful-life</b> flat part of the bathtub. One number, the failure rate λ (failures per hour), tells everything: the average life is 1/λ, and the chance to survive t hours is e<sup>−λt</sup>. After MTTF hours only <b>36.8 %</b> survive, not 50 %.</div>
@@ -34,7 +34,7 @@ ${card('m3-wb', '3.2', 'Weibull explorer — β (shape), η (scale), γ (locatio
  <div class="box tip"><b>Exam tip:</b> know the β table — &lt;1 DFR early life · =1 CFR random · &gt;1 IFR wear-out (β = 2 Rayleigh, linear h; β ≈ 3.4 nearly symmetric bell). MTTF ≠ η unless β = 1.</div>
  <div class="row"><button class="btn lec" id="wb-lec">Lecture: β = 2, η = 1000 h</button><button class="btn lec" id="wb-b05">Lecture: β = 0.5, η = 2500 h (mean 5000)</button><button class="btn lec" id="wb-b1">β = 1 ⇒ exponential</button><button class="btn" id="wb-b35">DEMO: β = 3.5 (bell-like)</button><button class="btn" id="wb-g">DEMO: γ = 300 h guarantee time</button></div>
  <div class="grid2"><div>${ctl('wb-b', 'shape β', 0.2, 8, 0.05, 2, '')}${ctl('wb-e', 'scale η', 100, 10000, 10, 1000, 'h')}${ctl('wb-g2', 'location γ', 0, 2000, 10, 0, 'h')}${ctl('wb-t', 'evaluate at t', 1, 20000, 1, 500, 'h')}</div>
- <div><div class="outs">${outBox('wb-F', 'F(t)')}${outBox('wb-R', 'R(t)')}${outBox('wb-h', 'h(t)')}${outBox('wb-mttf', 'MTTF = γ + ηΓ(1+1/β)')}${outBox('wb-med', 'median life')}${outBox('wb-b10', 'B10 life')}${outBox('wb-class', 'hazard type')}${outBox('wb-Reta', 'R(γ+η)')}</div></div></div>
+ <div><div class="outs">${outBox('wb-F', 'F(t)')}${outBox('wb-R', 'R(t)')}${outBox('wb-h', 'h(t)')}${outBox('wb-mttf', 'MTTF = γ + ηΓ(1+1/β)')}${outBox('wb-med', 'median life')}${outBox('wb-b10', 'B10 life')}${outBox('wb-class', 'hazard type')}${outBox('wb-mode', 'model in use')}${outBox('wb-Reta', 'R(γ+η)')}</div></div></div>
  <div class="grid2"><canvas class="plot" id="wb-pf" style="height:190px"></canvas><canvas class="plot" id="wb-pF" style="height:190px"></canvas><canvas class="plot" id="wb-pR" style="height:190px"></canvas><canvas class="plot" id="wb-ph" style="height:190px"></canvas></div>
  <h3>Compare several β at the same η</h3><canvas class="plot" id="wb-pm" style="height:220px"></canvas>
  <div class="row"><button class="btn fill" id="wb-mc">▶ simulate 10 000 units and compare with F(t)</button><span id="wb-mcout" class="mono"></span></div>
@@ -56,9 +56,10 @@ ${card('m3-wc', '3.3', 'Weibull calculator — reliability, life at a given R, c
 ${card('m3-mr', '3.4', 'Median-rank plotting — fit exponential and Weibull to test data', `
  <div class="box feyn"><b>🧒 Plain words:</b> You tested a few items to failure. Line the failure times up in order, give each a "rough percent failed" (its <b>median rank</b>), and plot on a special paper where a Weibull population becomes a <b>straight line</b>. The slope of the line is β; where it crosses 63.2 % gives η. For an exponential population the line is straight on ordinary-log paper through the origin and 1/slope = MTTF.</div>
  <div class="box formula">Median rank (exact): F<sub>j</sub> with P(Bin(n, F) ≥ j) = 0.5 &nbsp;|&nbsp; Bernard: F<sub>j</sub> ≈ (j − 0.3)/(n + 0.4)<br>Weibull paper: x = ln t, y = ln[−ln(1 − F)] = β ln t − β ln η ⇒ β = slope, η = exp(−intercept/β)<br>Exponential: −ln(1 − F) = λt (through origin) ⇒ λ̂ = Σ t·y / Σ t²</div>
- <div class="box tip"><b>Exam tip:</b> sort the data, compute ranks, plot, draw the best straight line, read β (slope) and η (at F = 63.2 %). With censored data the ranks are adjusted (described in the lecture — not computed here).</div>
+ <div class="box tip"><b>Exam tip:</b> sort the data, compute ranks, plot, draw the best straight line, read β (slope) and η (at F = 63.2 %). With censored (suspended) data, use <b>Johnson's adjusted rank</b>: type the survivor times in the suspensions box below and the table shows the reverse rank, increment and adjusted rank (textbook method; the lecture only says the ranks must be adjusted).</div>
  <div class="row"><button class="btn lec" id="mr-exp">Lecture: exponential test 7, 12, 19, 29, 41, 67 h</button><button class="btn lec" id="mr-wb">Lecture: Weibull test 17, 24, 26, 43, 43, 46, 50</button><label>rank method <select id="mr-m" data-live style="width:auto"><option value="exact">exact median rank</option><option value="bernard">Bernard (j−0.3)/(n+0.4)</option></select></label><button class="btn" id="mr-gen">DEMO: generate 10 random Weibull failures (β 2.5, η 500)</button></div>
- <label>Failure times (ordered automatically)<input type="text" id="mr-d" data-live value="17, 24, 26, 43, 43, 46, 50"></label>
+ <div class="grid2"><label>Failure times (ordered automatically)<input type="text" id="mr-d" data-live value="17, 24, 26, 43, 43, 46, 50"></label><label>Suspensions / censored times (survivors removed or still running — leave blank if none)<input type="text" id="mr-s" data-live value="" placeholder="e.g. 1100, 1500, 1900"></label></div>
+ <div class="row"><button class="btn" id="mr-cens">DEMO censored: failures 410, 780, 1230, 1710, 2350 with suspensions 1100, 1500, 1900</button><span class="mono" id="mr-cnote"></span></div>
  <div class="outs">${outBox('mr-b', 'Weibull β (slope)')}${outBox('mr-e', 'η (63.2 % point)')}${outBox('mr-b10', 'B10 from fit')}${outBox('mr-r2', 'R² of fit')}${outBox('mr-l', 'exponential through origin: 1/λ̂')}${outBox('mr-mean', 'Weibull MTTF')}</div>
  <div class="tblwrap"><table id="mr-tbl"></table></div>
  <div class="grid2"><canvas class="plot" id="mr-p1" style="height:260px"></canvas><canvas class="plot" id="mr-p2" style="height:260px"></canvas></div>
@@ -90,6 +91,18 @@ ${card('m3-qz', '3.7', 'Cheat sheet and self-test — Weibull and exponential', 
  <div class="tblwrap"><table class="cover"><tr><th>Quantity</th><th>Exponential</th><th>Weibull (γ=0)</th></tr><tr><td>R(t)</td><td>e<sup>−λt</sup></td><td>exp[−(t/η)<sup>β</sup>]</td></tr><tr><td>h(t)</td><td>λ</td><td>(β/η)(t/η)<sup>β−1</sup></td></tr><tr><td>MTTF</td><td>1/λ</td><td>ηΓ(1+1/β)</td></tr><tr><td>median</td><td>0.693/λ</td><td>η(ln 2)<sup>1/β</sup></td></tr><tr><td>B10</td><td>0.1054/λ</td><td>η(−ln 0.9)<sup>1/β</sup></td></tr><tr><td>R at MTTF / η</td><td>0.368</td><td>R(η) = 0.368</td></tr><tr><td>conditional</td><td>R(t) (memoryless)</td><td>R(s+t)/R(s)</td></tr></table></div>
  <div id="wq-quiz"></div><div class="row"><span class="pill" id="wq-score"></span><button class="btn sm" id="wq-reset">reset</button></div>
 `, CH.lec)}
+
+${card('m3-gam', '3.8', 'Gamma function Γ(x) — calculator, table and MTTF of the Weibull', `
+ <div class="box feyn"><b>🧒 Plain words:</b> Γ(x) is just the "factorial for any number": Γ(n) = (n−1)! for whole numbers, and it fills in the gaps between them (Γ(½) = √π ≈ 1.7725). The Weibull mean needs it because averaging t·f(t) over a stretched exponential produces exactly this integral. So <b>MTTF = γ + η·Γ(1 + 1/β)</b> — read Γ(1+1/β) off the table, multiply by η, add γ.</div>
+ <div class="box formula">Γ(x) = ∫<sub>0</sub><sup>∞</sup> y<sup>x−1</sup>e<sup>−y</sup> dy &nbsp;|&nbsp; Γ(x+1) = xΓ(x) &nbsp;|&nbsp; Γ(n) = (n−1)! &nbsp;|&nbsp; Γ(½) = √π<br>Weibull: MTTF = γ + ηΓ(1+1/β) &nbsp; Var = η²[Γ(1+2/β) − Γ²(1+1/β)] &nbsp; (table is tabulated for 1 ≤ x ≤ 2, so use Γ(x+1) = xΓ(x) to move into that range)</div>
+ <div class="box tip"><b>Exam tip:</b> the lecture gives the table only as an image. This card computes the same numbers exactly (Lanczos). To use the table for e.g. Γ(3.5): Γ(3.5) = 2.5 × 1.5 × Γ(1.5) = 2.5 × 1.5 × 0.8862 = 3.3234. Typical values: β = 1 → Γ(2) = 1 (MTTF = η); β = 2 → Γ(1.5) = 0.8862; β = 0.5 → Γ(3) = 2 (MTTF = 2η).</div>
+ <div class="row"><button class="btn lec" id="gm-half">Γ(½) = √π</button><button class="btn" id="gm-5">Γ(5) = 4! = 24</button><button class="btn lec" id="gm-b2">β = 2, η = 1000 → MTTF 886.2</button><button class="btn lec" id="gm-b05">β = 0.5, η = 2500 → MTTF 5000</button><button class="btn" id="gm-g3">3-parameter: β = 2, η = 1000, γ = 300</button></div>
+ <div class="grid2"><div>${ctl('gm-x', 'argument x (for Γ(x))', 0.1, 8, 0.05, 1.5, '')}${ctl('gm-b', 'Weibull β', 0.2, 10, 0.05, 2, '')}${ctl('gm-e', 'Weibull η', 100, 10000, 10, 1000, 'h')}${ctl('gm-g', 'Weibull γ', 0, 3000, 10, 0, 'h')}</div>
+ <div><div class="outs">${outBox('gm-gx', 'Γ(x)')}${outBox('gm-rec', 'recursion (x−1)Γ(x−1)')}${outBox('gm-fact', 'factorial check')}${outBox('gm-g1', 'Γ(1 + 1/β)')}${outBox('gm-mttf', 'MTTF = γ + ηΓ(1+1/β)')}${outBox('gm-sd', 'standard deviation σ')}</div></div></div>
+ <canvas class="plot" id="gm-plot" style="height:220px"></canvas>
+ <h3>Γ(1 + 1/β) and MTTF/η for common β (computed)</h3><div class="tblwrap"><table class="cover" id="gm-tbl"></table></div>
+ <span class="src">L3/L4: MTTF = ηΓ(1+1/β) and the printed Gamma-function table (an image in the slides; the numbers here are computed). Γ recursion, Γ(½) = √π and Γ(n) = (n−1)! are standard textbook results (Kapur &amp; Lamberson, Appendix).</span>
+`, CH.lec + ' ' + CH.tb)}
 `;
 
 /* ===== 3.1 exponential ===== */
@@ -117,7 +130,7 @@ ${card('m3-qz', '3.7', 'Cheat sheet and self-test — Weibull and exponential', 
   function calc() {
     const b = V('wb-b'), e = V('wb-e'), g = V('wb-g2'), t = V('wb-t'), D = DIST.weibull({ b, e, g }), tm = g + e * Math.max(2.2, Math.pow(4, 1 / b) * 1.4);
     setBox('wb-F', f4(D.F(t)), 'F(t)'); setBox('wb-R', f4(D.R(t)), 'R(t)', 'hi'); setBox('wb-h', nice(D.h(t)), 'h(t) per unit'); setBox('wb-mttf', nice(g + e * gammaFn(1 + 1 / b)), 'γ + ηΓ(1+1/β)'); setBox('wb-med', nice(g + e * Math.pow(Math.LN2, 1 / b)), 'γ + η(ln2)^(1/β)'); setBox('wb-b10', nice(g + e * Math.pow(-Math.log(0.9), 1 / b)), 'γ + η(−ln0.9)^(1/β)');
-    setBox('wb-class', b < 0.995 ? 'DFR (early life)' : b > 1.005 ? 'IFR (wear-out)' : 'CFR (random)', `β = ${b}`); setBox('wb-Reta', f4(Math.exp(-1)), 'always e⁻¹');
+    setBox('wb-mode', g > 0 ? '3-parameter' : '2-parameter', g > 0 ? `no failures before γ = ${g}; curve = 2-par shifted right by γ` : 'γ = 0 → (β, η) only', g > 0 ? 'hi' : ''); setBox('wb-class', b < 0.995 ? 'DFR (early life)' : b > 1.005 ? 'IFR (wear-out)' : 'CFR (random)', `β = ${b}`); setBox('wb-Reta', f4(Math.exp(-1)), 'always e⁻¹');
     const ax = { xmin: 0, xmax: tm }; let fm = 0, hm = 0; for (let i = 1; i <= 300; i++) { const x = g + (tm - g) * i / 300; fm = Math.max(fm, D.f(x)); hm = Math.max(hm, D.h(x)); }
     const mk = (fn, c) => [{ color: c, f: x => { const v = fn(x); return isFinite(v) ? v : 0; } }], mrk = (y) => [{ x: t, y }];
     P.f.set(mk(D.f, '#2457d6'), { axes: { ...ax, ymin: 0, ymax: Math.min(fm, 12 / e) * 1.1 }, marks: mrk(Math.min(D.f(t), 12 / e)) }); P.F.set(mk(D.F, '#d98200'), { axes: { ...ax, ymin: 0, ymax: 1 }, marks: mrk(D.F(t)) });
@@ -151,7 +164,27 @@ ${card('m3-qz', '3.7', 'Cheat sheet and self-test — Weibull and exponential', 
 /* ===== 3.4 median-rank plotting ===== */
 (function () {
   const sec = el('m3-mr'), p1 = mkPlot('mr-p1', { xlabel: 'ln t', ylabel: 'ln(−ln(1−F))  (Weibull paper)' }), p2 = mkPlot('mr-p2', { xlabel: 't', ylabel: '−ln(1−F)  (exponential paper)' });
+  function johnson(fails, sus) {
+    const all = fails.map(t => ({ t, f: 1 })).concat(sus.map(t => ({ t, f: 0 }))).sort((a, b) => a.t - b.t || b.f - a.f), n = all.length; let prev = 0; const rows = [];
+    all.forEach((x, i) => { const r = n - i; if (x.f) { const inc = (n + 1 - prev) / (1 + r); prev += inc; rows.push({ pos: i + 1, t: x.t, f: 1, r, inc, adj: prev, F: (prev - 0.3) / (n + 0.4) }); } else rows.push({ pos: i + 1, t: x.t, f: 0, r }); });
+    return rows;
+  }
+  function calcCens(sus) {
+    const fl = parseList(el('mr-d').value).filter(x => x > 0), rows = johnson(fl, sus), fr = rows.filter(r => r.f), n = rows.length;
+    el('mr-cnote').textContent = `n = ${n} (${fr.length} failures, ${sus.length} suspensions) · Johnson adjusted ranks + Bernard (adj − 0.3)/(n + 0.4)`;
+    el('mr-tbl').innerHTML = '<tr><th>pos</th><th>t</th><th>status</th><th>reverse rank</th><th>increment I</th><th>adjusted rank</th><th>median rank F (%)</th></tr>' + rows.map(r => r.f ? `<tr><td>${r.pos}</td><td>${r.t}</td><td>F</td><td>${r.r}</td><td>${r.inc.toFixed(4)}</td><td>${(+r.adj.toFixed(4))}</td><td>${(100 * r.F).toFixed(2)}</td></tr>` : `<tr class="dim"><td>${r.pos}</td><td>${r.t}</td><td>S (suspended)</td><td>${r.r}</td><td>—</td><td>—</td><td>—</td></tr>`).join('');
+    if (fr.length < 3) { ['mr-b', 'mr-e', 'mr-b10', 'mr-r2', 'mr-l', 'mr-mean'].forEach(i => setBox(i, '—', 'need ≥ 3 failures')); return; }
+    const X = fr.map(r => Math.log(r.t)), Y = fr.map(r => Math.log(-Math.log(1 - r.F))), Z = fr.map(r => -Math.log(1 - r.F)), mx = mean(X), my = mean(Y); let sxy = 0, sxx = 0, syy = 0; X.forEach((x, i) => { sxy += (x - mx) * (Y[i] - my); sxx += (x - mx) ** 2; syy += (Y[i] - my) ** 2; });
+    const b = sxy / sxx, a = my - b * mx, eta = Math.exp(-a / b), r2 = sxy * sxy / (sxx * syy); let st = 0, ss = 0; fr.forEach((r, i) => { st += r.t * Z[i]; ss += r.t * r.t; }); const lam = st / ss;
+    setBox('mr-b', f2(b), 'β̂ (failures only, adjusted ranks)', 'hi'); setBox('mr-e', nice(eta), 'η̂ = exp(−a/β)'); setBox('mr-b10', nice(eta * Math.pow(-Math.log(0.9), 1 / b)), 'η(−ln0.9)^(1/β)'); setBox('mr-r2', r2.toFixed(4), 'straightness'); setBox('mr-l', nice(1 / lam), `λ̂ = ${sci(lam, 3)} per unit`); setBox('mr-mean', nice(eta * gammaFn(1 + 1 / b)), 'ηΓ(1+1/β)');
+    const lo = Math.min(...X) - 0.3, hi = Math.max(...X) + 0.3;
+    p1.set([{ name: 'failures', color: '#d23b3b', dots: true, pts: X.map((x, i) => [x, Y[i]]), nolines: true }, { name: `fit β = ${b.toFixed(2)}`, color: '#2457d6', f: x => a + b * x }], { axes: { xmin: lo, xmax: hi, ymin: Math.min(...Y) - 0.4, ymax: Math.max(...Y) + 0.4 }, marks: [{ x: Math.log(eta), y: 0, label: 'η (F=63.2 %)', color: '#12915b' }] });
+    const tm = Math.max(...fr.map(r => r.t)) * 1.2; p2.set([{ name: 'failures', color: '#d23b3b', dots: true, pts: fr.map((r, i) => [r.t, Z[i]]) }, { name: 'through origin', color: '#12915b', f: x => lam * x }], { axes: { xmin: 0, xmax: tm, ymin: 0, ymax: Math.max(...Z, lam * tm) * 1.1 } });
+  }
+  window.johnsonRanks = johnson;
   function calc() {
+    const sus = parseList(el('mr-s').value).filter(x => x > 0); if (sus.length) return calcCens(sus);
+    el('mr-cnote').textContent = '';
     const d = parseList(el('mr-d').value).filter(x => x > 0).sort((a, b) => a - b), n = d.length; if (n < 3) return;
     const bern = el('mr-m').value === 'bernard', F = d.map((_, i) => bern ? bernardRank(i + 1, n) : medianRankExact(i + 1, n)), X = d.map(Math.log), Y = F.map(f => Math.log(-Math.log(1 - f)));
     const mx = mean(X), my = mean(Y); let sxy = 0, sxx = 0, syy = 0; X.forEach((x, i) => { sxy += (x - mx) * (Y[i] - my); sxx += (x - mx) ** 2; syy += (Y[i] - my) ** 2; });
@@ -164,9 +197,10 @@ ${card('m3-qz', '3.7', 'Cheat sheet and self-test — Weibull and exponential', 
     const tm = Math.max(...d) * 1.2; p2.set([{ name: 'data', color: '#d23b3b', dots: true, pts: d.map((t, i) => [t, Z[i]]) }, { name: 'through origin', color: '#12915b', f: x => lam * x }], { axes: { xmin: 0, xmax: tm, ymin: 0, ymax: Math.max(...Z, lam * tm) * 1.1 } });
   }
   wire(sec, calc);
-  on('mr-exp', 'click', () => { el('mr-d').value = '7, 12, 19, 29, 41, 67'; el('mr-m').value = 'exact'; calc(); });
-  on('mr-wb', 'click', () => { el('mr-d').value = '17, 24, 26, 43, 43, 46, 50'; el('mr-m').value = 'bernard'; calc(); });
-  on('mr-gen', 'click', () => { const a = []; for (let i = 0; i < 10; i++) a.push(Math.round(rweib(2.5, 500))); el('mr-d').value = a.join(', '); calc(); });
+  on('mr-cens', 'click', () => { el('mr-d').value = '410, 780, 1230, 1710, 2350'; el('mr-s').value = '1100, 1500, 1900'; el('mr-m').value = 'bernard'; calc(); });
+  on('mr-exp', 'click', () => { el('mr-s').value = ''; el('mr-d').value = '7, 12, 19, 29, 41, 67'; el('mr-m').value = 'exact'; calc(); });
+  on('mr-wb', 'click', () => { el('mr-s').value = ''; el('mr-d').value = '17, 24, 26, 43, 43, 46, 50'; el('mr-m').value = 'bernard'; calc(); });
+  on('mr-gen', 'click', () => { el('mr-s').value = ''; const a = []; for (let i = 0; i < 10; i++) a.push(Math.round(rweib(2.5, 500))); el('mr-d').value = a.join(', '); calc(); });
   calc();
 })();
 
@@ -211,6 +245,26 @@ ${card('m3-qz', '3.7', 'Cheat sheet and self-test — Weibull and exponential', 
   }
   el('m3-qz').addEventListener('change', e => { const t = e.target; if (t.dataset && t.dataset.q !== undefined) { ans[+t.dataset.q] = +t.dataset.o; render(); } });
   on('wq-reset', 'click', () => { ans = {}; render(); }); render();
+})();
+
+
+/* ===== 3.8 Gamma function ===== */
+(function () {
+  const sec = el('m3-gam'), pl = mkPlot('gm-plot', { xlabel: 'x', ylabel: 'Γ(x)' });
+  function calc() {
+    const x = V('gm-x'), b = V('gm-b'), e = V('gm-e'), g = V('gm-g'), G = gammaFn(x), g1 = gammaFn(1 + 1 / b), g2 = gammaFn(1 + 2 / b);
+    setBox('gm-gx', f4(G), `Γ(${x})`, 'hi'); setBox('gm-rec', x > 1 ? f4((x - 1) * gammaFn(x - 1)) : '—', 'equals Γ(x) (Γ(x+1)=xΓ(x))');
+    setBox('gm-fact', Math.abs(x - Math.round(x)) < 1e-9 && x >= 1 ? `${x - 1}! = ${Math.round(G)}` : 'x not an integer', 'Γ(n) = (n−1)!');
+    setBox('gm-g1', f4(g1), `β = ${b}`, 'hi'); setBox('gm-mttf', nice(g + e * g1), 'γ + η·Γ(1+1/β)', 'hi'); setBox('gm-sd', nice(e * Math.sqrt(Math.max(0, g2 - g1 * g1))), 'η√[Γ(1+2/β) − Γ²(1+1/β)]');
+    pl.set([{ name: 'Γ(x)', color: '#2457d6', f: t => Math.min(gammaFn(Math.max(t, 0.05)), 12) }], { axes: { xmin: 0, xmax: 5, ymin: 0, ymax: 8 }, marks: [{ x: Math.min(x, 5), y: Math.min(G, 8), label: 'x' }, { x: 1.5, y: gammaFn(1.5), label: 'Γ(1.5)=0.886', color: '#12915b' }] });
+  }
+  const B = [0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 10];
+  el('gm-tbl').innerHTML = '<tr><th>β</th>' + B.map(v => `<td>${v}</td>`).join('') + '</tr><tr><th>1 + 1/β</th>' + B.map(v => `<td>${(1 + 1 / v).toFixed(3)}</td>`).join('') + '</tr><tr><th>Γ(1+1/β) = MTTF/η</th>' + B.map(v => `<td>${gammaFn(1 + 1 / v).toFixed(4)}</td>`).join('') + '</tr>';
+  wire(sec, calc);
+  on('gm-half', 'click', () => { setV('gm-x', 0.5); calc(); }); on('gm-5', 'click', () => { setV('gm-x', 5); calc(); });
+  on('gm-b2', 'click', () => { setV('gm-b', 2); setV('gm-e', 1000); setV('gm-g', 0); calc(); }); on('gm-b05', 'click', () => { setV('gm-b', 0.5); setV('gm-e', 2500); setV('gm-g', 0); calc(); });
+  on('gm-g3', 'click', () => { setV('gm-b', 2); setV('gm-e', 1000); setV('gm-g', 300); calc(); });
+  calc();
 })();
 
 })();

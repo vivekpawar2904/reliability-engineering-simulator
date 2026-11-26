@@ -15,6 +15,7 @@ const cov = [
   ['M3', 'Hazard rate, constant hazard, exponential', '3.1 exponential with MSE Q2c (λ, R(8000) = 0.527, MTTF 12 500 h), memoryless test', 'covered'],
   ['M3', 'Hazard models: constant, linearly increasing, time-dependent', '3.5 any h(t) → R(t) → MTTF (constant, linear, Rayleigh, mixed)', 'covered'],
   ['M3', 'Weibull model and distribution MTTF', '3.2 explorer, 3.3 calculator (B10, conditional R, PM), 3.4 median-rank plotting, 3.6 normal / log-normal comparison', 'covered'],
+  ['M3', 'Weibull 3-parameter (γ), Gamma function, Weibull plots with censored data', '3.2 γ slider and 3-parameter model flag, 3.8 Gamma calculator + Γ(1+1/β) table, 3.4 Johnson adjusted ranks for suspensions', 'covered (Johnson = textbook)'],
   ['M4', 'Series, parallel, mixed configurations', '4.1 RBD builder (nested series / parallel groups), 4.2 series circuit', 'covered'],
   ['M4', 'k-out-of-n structure', '4.3 binomial table + curve, also available as a group type in 4.1', 'covered'],
   ['M4', 'Complex systems', '4.6 bridge network (conditioning + all 32 states + path/cut sets)', 'covered (textbook demo)'],
@@ -31,9 +32,23 @@ const cov = [
   ['M6', 'Fault tree construction, symbols, analysis', '6.3 AND / OR / voting / XOR, basic and undeveloped events, top-event P, cut sets, importance', 'covered (transfer and priority-AND gates are described, not simulated)'],
   ['M6', 'Functional RBD development from a fault tree', '6.3 auto-converted RBD under every tree', 'covered'],
   ['M6', 'Event tree analysis', '6.4 editable tree with the IEC 60300-3-9 slide example', 'covered'],
+  ['M5', 'RAM study; Monte Carlo simulation', '5.9 Monte Carlo availability of k-of-n repairable units with design-alternative table, 5.10 inverse-transform visual, steps and worked system', 'covered (textbook for inverse transform)'],
+  ['M6', 'S / O / D scales and RPN', '6.2b interactive 1–10 scales with RPN and CRN', 'covered (O, D wording = textbook)'],
+  ['M6', 'FTA symbols (transfer, inhibit, priority-AND) and construction', '6.6 12-symbol gallery, three mini-demos, 7-step construction', 'covered'],
+  ['M6', 'RCM and its 7 steps; RCM vs FMEA/FMECA', '6.7 walk a component through the 7 questions, 6.8 comparison table + self-test', 'covered'],
+  ['M6', 'Condition-based monitoring', '6.9 interactive P–F curve with inspection interval and technique table', 'covered'],
   ['M6', 'FTA vs ETA vs RBD', '6.5 side-by-side with live numbers', 'covered']
 ];
+const EX = [["M3", "Constant and time-dependent hazard models", [["3.5 Hazard models", "m3-hm"], ["3.1 Exponential", "m3-exp"]], [16, 15], "lec+tb"], ["M3", "Exponential distribution", [["3.1 Exponential (MSE Q2c)", "m3-exp"]], [15, 42], "lec"], ["M3", "Weibull — 2-parameter and 3-parameter (γ)", [["3.2 Weibull explorer (β, η, γ)", "m3-wb"], ["3.3 Calculator", "m3-wc"]], [17, 14], "lec"], ["M3", "Weibull PDF, CDF, R(t), hazard", [["3.2 Explorer", "m3-wb"]], [17, 44], "lec"], ["M3", "MTTF and the Gamma function", [["3.8 Gamma calculator + table", "m3-gam"]], [18], "lec"], ["M3", "Weibull plots and censored data (Johnson)", [["3.4 Median-rank plot + suspensions", "m3-mr"]], [19], "lec+tb"], ["M4", "Series, parallel and mixed configurations", [["4.1 RBD builder", "m4-rbd"], ["4.2 Series circuit", "m4-circuit"]], [20, 24, 45], "lec"], ["M4", "Active and standby redundancy", [["4.5 Standby vs active", "m4-standby"], ["4.4 Element / unit", "m4-elem"], ["4.3 k-out-of-n", "m4-kn"]], [23, 21], "lec+tb"], ["M4", "Reliability Block Diagrams (RBD)", [["4.1 RBD builder", "m4-rbd"], ["4.6 Bridge", "m4-complex"]], [24, 20], "lec"], ["M4", "Markov analysis", [["4.7 Markov 2-unit", "m4-markov"]], [22], "lec"], ["M5", "Maintainability and factors affecting it", [["5.1 M(t)", "m5-mt"], ["5.7 factors table", "m5-dfm"]], [27, 25], "lec+tb"], ["M5", "Design for maintainability", [["5.7 Design for maintainability", "m5-dfm"]], [25], "lec"], ["M5", "System downtime", [["5.3 System downtime", "m5-down"]], [28], "lec"], ["M5", "Availability: Ai, Aa, Ao", [["5.4 Availability", "m5-av"], ["5.5 Timeline", "m5-sim"]], [26, 48], "lec"], ["M5", "RAM study", [["5.9 RAM study", "m5-ram"]], [29], "lec+tb"], ["M5", "Monte Carlo simulation", [["5.10 Monte Carlo", "m5-mc"]], [30], "lec+tb"], ["M6", "FMEA and FMECA", [["6.1 Concepts", "m6-concept"], ["6.2 Worksheet", "m6-fmeca"]], [31], "lec"], ["M6", "Severity, Occurrence, Detection and RPN", [["6.2b S·O·D scales", "m6-sod"], ["6.2 Worksheet", "m6-fmeca"]], [34], "lec+tb"], ["M6", "FMECA examples", [["6.2 Worksheet (flash drum)", "m6-fmeca"], ["6.2b S·O·D", "m6-sod"]], [35], "lec"], ["M6", "Fault Tree Analysis — symbols and construction", [["6.6 FTA symbols", "m6-sym"], ["6.3 Fault tree builder", "m6-fta"]], [36, 37, 32], "lec+tb"], ["M6", "Event Tree Analysis (ETA)", [["6.4 Event tree", "m6-eta"]], [33], "lec"], ["M6", "Reliability Centered Maintenance and its 7 steps", [["6.7 RCM 7-step walk-through", "m6-rcm"]], [38], "lec+tb"], ["M6", "RCM vs FMEA/FMECA", [["6.8 RCM vs FMEA/FMECA", "m6-rcmv"]], [39], "lec+tb"], ["M6", "Condition-Based Monitoring (P–F curve)", [["6.9 CBM + P–F curve", "m6-cbm"]], [40], "lec+tb"]];
+const exRows = EX.map((e, i) => `<tr><td><input type="checkbox" class="ex-ck" data-i="${i}" aria-label="done"></td><td><b>${e[0]}.${EX.slice(0, i).filter(x => x[0] === e[0]).length + 1}</b></td><td>${e[1]}</td><td>${e[2].map(c => `<a href="#${c[1]}">${c[0]}</a>`).join('<br>')}</td><td>${e[3].map(p => `<a href="assets/RE_Infographics.pdf#page=${p}" target="_blank" rel="noopener">p.${p}</a>`).join(', ')}</td><td>${e[4] === 'lec' ? CH.lec : CH.lec + ' ' + CH.tb}</td></tr>`).join('');
 $('#tab-guide').innerHTML = `
+<article class="card" id="exam-topics">
+ <h2>✅ Exam topics checklist — Modules 3 to 6 <span class="chip mse">24 topics</span></h2>
+ <p>Every topic you marked as exam-important has its own simulator card and its own page in the 50-page <a href="#tab-pdf">PDF notes</a>. Tick a topic when you can draw it, write its formula and do one number. Ticks are saved in this browser.</p>
+ <div class="tblwrap"><table class="cover examlist" id="ex-tbl"><tr><th>✔</th><th>#</th><th>Topic</th><th>Simulator card</th><th>PDF page</th><th>Source</th></tr>${exRows}</table></div>
+ <div class="row"><span class="pill" id="ex-count"></span><button class="btn sm" id="ex-clear">clear ticks</button></div>
+ <span class="src">${CH.lec} = taught in Dr. Pyne's lectures (his notation). ${CH.tb} = the lectures are thin or silent, so the textbook method is added (Johnson's adjusted rank, inverse transform, house / inhibit symbols, typical O and D scales, ½ P–F rule); each card says which parts.</span>
+</article>
 <article class="card">
  <h2>Welcome, Vivek 👋 <span class="chip lec">OEC7012 · Modules 1–6</span></h2>
  <p>This is a hands-on lab for all six modules of the course (OEC7012). Every card has the same rhythm: <b>🧒 plain-words explanation → formula in Dr. Pyne's notation → ⏱ exam tip → a "load lecture example" button → sliders to play with</b>. Slide numbers are reproduced exactly where the slides print them.</p>
@@ -47,7 +62,7 @@ $('#tab-guide').innerHTML = `
   <div class="box good"><b>M5 · Maintainability &amp; availability</b><br>M(t) with μ, MTTR and MTBF from data, Ai / Aa / Ao, animated up-down timeline, R–M trade-off, 8 DFM factors, preventive maintenance.<br><br><a class="btn sm" href="#tab-m5">open M5 →</a></div>
   <div class="box tip"><b>M6 · FMECA · FTA · ETA</b><br>Sortable FMECA worksheet (CRN, RPN), fault-tree builder with cut sets and auto-RBD, event-tree builder with the IEC slide example, and a three-way comparison.<br><br><a class="btn sm" href="#tab-m6">open M6 →</a></div>
  </div>
- <div class="box good"><b>📄 Printable notes:</b> the 32-page infographic guide for all six modules is on the <a href="#tab-pdf">PDF Notes</a> tab (view in the page or <a href="assets/RE_Infographics.pdf" target="_blank" rel="noopener">open / download the PDF</a>).</div>
+ <div class="box good"><b>📄 Printable notes:</b> the 50-page infographic guide for all six modules (with an exam-topic checklist on page 2) is on the <a href="#tab-pdf">PDF Notes</a> tab (view in the page or <a href="assets/RE_Infographics.pdf" target="_blank" rel="noopener">open / download the PDF</a>).</div>
  <h3>How to read the labels</h3>
  <p>${CH.lec} the numbers are printed on Dr. Pyne's slides. ${CH.mse} the number comes from the SH 2026 mid-sem solution. ${CH.demo} I made the numbers up so you can experiment — never quote them as "official". ${CH.pred} a syllabus topic where the slides are thin, so the formula is the textbook one.</p>
  <h3>Preset results you can check in 30 seconds</h3>
@@ -65,12 +80,19 @@ $('#tab-guide').innerHTML = `
   <tr><td>M3 · 3.2</td><td>Weibull β = 2, η = 1000 h</td><td>MTTF 886.2, median 832.6, B10 324.6, R(η) = 0.368</td></tr>
   <tr><td>M3 · 3.3</td><td>tire β = 2.5, η = 8000 km, 12 000 tires at 5000 km; β = ½, η = 2000; β = ⅓, η = 16 000</td><td>3 188 fail; MTTF 4000 (R(4000) = 0.243); 96 000</td></tr>
   <tr><td>M3 · 3.4</td><td>exponential test (exact median ranks)</td><td>10.91 … 89.09 %; 1/λ̂ ≈ 31 h</td></tr>
+  <tr><td>M3 · 3.2</td><td>3-parameter: β = 2, η = 1000, γ = 300, t = 800</td><td>R = 0.7788, MTTF = 1186.2</td></tr>
+  <tr><td>M3 · 3.8</td><td>Γ(½); Γ(5); β = 2 and β = 0.5</td><td>1.7725; 24; Γ(1.5) = 0.8862 (MTTF 886.2), Γ(3) = 2 (MTTF 5000)</td></tr>
+  <tr><td>M3 · 3.4</td><td>censored DEMO: failures 410, 780, 1230, 1710, 2350; suspensions 1100, 1500, 1900</td><td>Johnson adjusted ranks 1, 2, 3.167, 4.625, 6.8125; β̂ ≈ 1.58, η̂ ≈ 1992 h</td></tr>
   <tr><td>M4 · 4.1</td><td>two missiles 0.92 in parallel (MSE)</td><td>0.9936</td></tr>
   <tr><td>M4 · 4.3</td><td>rocket, 3-of-4, R = 0.98</td><td>0.9977</td></tr>
   <tr><td>M4 · 4.2</td><td>circuit: λ<sub>s</sub> = 0.0001</td><td>R(10) = 0.999, R(100) = 0.990, R(1000) = 0.905</td></tr>
   <tr><td>M5 · 5.1</td><td>milling machine 84 repairs, 578 h</td><td>MTTR = 6.881 h, μ = 0.1453, M(1) = 0.1352, M(5) = 0.5164, M(20) = 0.9453</td></tr>
   <tr><td>M5 · 5.2</td><td>uptimes 50, 30, 60, 46 days</td><td>MTBF = 46.5 days</td></tr>
   <tr><td>M5 · 5.8</td><td>Weibull β = 2, η = 1000, PM at 300 h</td><td>3 023 → 1 647 failures, saves 1 376</td></tr>
+  <tr><td>M5 · 5.9</td><td>single unit MTBF 500, MTTR 20</td><td>A<sub>i</sub> = 0.9615; Monte Carlo ≈ 0.96</td></tr>
+  <tr><td>M5 · 5.10</td><td>parallel pair λ = 0.001/h, 500 h (n = 2, k = 1, β = 1, η = 1000)</td><td>exact R = 0.8452; Monte Carlo within 2 standard errors</td></tr>
+  <tr><td>M6 · 6.2b</td><td>S 7, O 4, D 5 → after S 7, O 2, D 2</td><td>RPN 140 → 28</td></tr>
+  <tr><td>M6 · 6.9</td><td>bearing P–F 6 weeks, inspect every 3</td><td>2 checks inside the window, detected, rule Δ ≤ ½ P–F satisfied</td></tr>
   <tr><td>M6 · 6.2</td><td>flash-drum FMECA rows</td><td>CRN 30, 32, 27, 6, 21</td></tr>
   <tr><td>M6 · 6.3</td><td>missiles / rocket fault trees</td><td>P(top) 0.0064 → R 0.9936; 0.00234 → R 0.9977</td></tr></table></div>
  <h3>Things the simulator caught on the slides (write the correct version in the exam)</h3>
@@ -105,6 +127,7 @@ $('#tab-sheet').innerHTML = `
   <div class="box formula">Exponential: R = e<sup>−λt</sup>, MTTF = 1/λ, R(MTTF) = 0.368, memoryless<br>Linear: h = a + bt ⇒ R = exp(−at − bt²/2) · Weibull: R = exp[−((t−γ)/η)<sup>β</sup>], MTTF = γ + ηΓ(1+1/β), B10 = η(−ln 0.9)<sup>1/β</sup><br>R(t|s) = R(s+t)/R(s) · median ranks (j−0.3)/(n+0.4) · Weibull paper: slope = β</div>
  </div>
  <div>
+  <div class="box formula"><b>Exam-topic add-ons:</b> 3-par Weibull: R = exp[−((t−γ)/η)<sup>β</sup>] for t ≥ γ, MTTF = γ + ηΓ(1+1/β), Γ(x+1) = xΓ(x), Γ(½) = √π · Johnson: I = (n+1−prev)/(1+reverse rank), adj = prev + I, F = (adj−0.3)/(n+0.4) · inverse transform t = γ + η[−ln(1−U)]<sup>1/β</sup></div>
   <h3>M4 · System reliability</h3>
   <div class="box formula">Series: R<sub>s</sub> = ΠR<sub>i</sub> ≤ min R<sub>i</sub>; exp.: R<sub>s</sub> = e<sup>−(Σn<sub>i</sub>λ<sub>i</sub>)t</sup><br>Parallel: R<sub>s</sub> = R<sub>1</sub>+R<sub>2</sub>−R<sub>1</sub>R<sub>2</sub> = 1−Π(1−R<sub>i</sub>) ≥ max R<sub>i</sub><br>k-of-n: R<sub>s</sub> = Σ<sub>i=k</sub><sup>n</sup> C(n,i)R<sup>i</sup>(1−R)<sup>n−i</sup>; k=n series, k=1 parallel<br>Series-parallel (4 units 0.94): [1−(1−R)²]² = 0.9928<br>Standby (perfect switch): e<sup>−λt</sup>(1+λt), MTTF = 2/λ<br>Markov: R(t) = Σ P<sub>up</sub>(t); absorbing failed state ⇒ R, repair out of it ⇒ A</div>
   <div class="box warn"><b>Traps:</b> never add reliabilities in series · hot-parallel formula ≠ cold standby · k-of-n sum starts at i = k · state independence · say "R = 1 − (both fail)" for "at least one hits" (MSE: 0.9936).</div>
@@ -113,6 +136,7 @@ $('#tab-sheet').innerHTML = `
   <div class="box warn"><b>Traps:</b> maintainability ≠ maintenance · μ = repairs per hour (84/578) · divide MTBF by failures, not intervals · write A<sub>i</sub>, not just "A".</div>
  </div>
  <div>
+  <div class="box formula"><b>Exam-topic add-ons:</b> active parallel R = 2R − R², standby R(1+R<sub>sw</sub>λt)-type (see 4.5) · A<sub>sys</sub> = Σ<sub>j≥k</sub> C(n,j)A<sub>i</sub><sup>j</sup>(1−A<sub>i</sub>)<sup>n−j</sup> · MC error √(p(1−p)/N) · RPN = S×O×D · inhibit P = P(i)P(c) · inspect at Δ ≤ ½ (P–F) · RCM 7 Q: function, functional failure, failure mode, effect, consequence, task, default</div>
   <h3>M6 · FMECA, FTA, ETA</h3>
   <div class="box formula">FMEA qualitative, FMECA quantitative criticality (MIL-STD-1629, "C" = criticality)<br>CRN = S × O (L11 example: 30, 32, 27, 6, 21) · RPN = S × O × D<br>FTA (Bell Labs 1962, Boeing): top-down, failure space<br>OR ↔ RBD series: R<sub>s</sub> = R<sub>A</sub>R<sub>B</sub>R<sub>C</sub> · AND ↔ RBD parallel: R<sub>s</sub> = R<sub>A</sub>+R<sub>B</sub>−R<sub>A</sub>R<sub>B</sub><br>AND: P = ΠP<sub>i</sub> · OR: P = 1−Π(1−P<sub>i</sub>) · voting OR ↔ k-out-of-n<br>Symbols: rectangle (event), circle (basic), diamond (undeveloped), AND, OR, transfer, priority AND, XOR<br>ETA: inductive, initiating event + barriers, path P = Π branches, frequency = f × P<br>FTA: how did it fail? ETA: what happens next? RBD: which paths still work?</div>
   <div class="box warn"><b>Traps:</b> FMEA ≠ FMECA · RPN alone doesn't choose the maintenance strategy · OR in failure space is series in success space · FTA and ETA are not the same · draw the tree, don't just list causes.</div>
@@ -120,4 +144,13 @@ $('#tab-sheet').innerHTML = `
   <div class="box tip">1) name the model and assumptions · 2) write the formula · 3) substitute with units · 4) box the answer · 5) one line of meaning ("13.52% chance of repair in 1 h").</div>
  </div></div>
 </article>`;
+
+(function () {
+  const K = 're-exam-ticks'; let st = {}; try { st = JSON.parse(localStorage.getItem(K) || '{}'); } catch (e) { }
+  const boxes = document.querySelectorAll('.ex-ck');
+  function upd() { const n = [...boxes].filter(b => b.checked).length; const p = document.getElementById('ex-count'); if (p) p.textContent = `${n} / ${boxes.length} topics ticked`; }
+  boxes.forEach(b => { b.checked = !!st[b.dataset.i]; b.addEventListener('change', () => { st[b.dataset.i] = b.checked; try { localStorage.setItem(K, JSON.stringify(st)); } catch (e) { } upd(); }); });
+  const cl = document.getElementById('ex-clear'); if (cl) cl.addEventListener('click', () => { boxes.forEach(b => b.checked = false); st = {}; try { localStorage.removeItem(K); } catch (e) { } upd(); });
+  upd();
+})();
 })();

@@ -8,7 +8,7 @@ const Phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
 root.innerHTML = `
 <div class="subnav">
  <a href="#m5-mt">5.1 M(t)</a><a href="#m5-mtbf">5.2 MTBF / MTTR data</a><a href="#m5-down">5.3 Downtime anatomy</a><a href="#m5-av">5.4 Ai / Aa / Ao</a>
- <a href="#m5-sim">5.5 Up/down timeline</a><a href="#m5-rm">5.6 R–M trade-off</a><a href="#m5-dfm">5.7 Design for maintainability</a><a href="#m5-pm">5.8 Preventive maintenance</a>
+ <a href="#m5-sim">5.5 Up/down timeline</a><a href="#m5-rm">5.6 R–M trade-off</a><a href="#m5-dfm">5.7 Design for maintainability</a><a href="#m5-pm">5.8 Preventive maintenance</a><a href="#m5-ram">5.9 RAM study</a><a href="#m5-mc">5.10 Monte Carlo</a>
 </div>
 
 ${card('m5-mt', '5.1', 'Maintainability function M(t) — "how fast will the mechanic finish?"', `
@@ -137,6 +137,14 @@ ${card('m5-dfm', '5.7', 'Design for maintainability: eight factors, rules, and a
  <div class="row"><span class="pill" id="rules-count"></span><button class="btn sm" id="rules-clear">clear ticks</button></div>
  <h3>Factors that affect maintainability (L7–8)</h3>
  <div class="tag-list"><span class="pill">Drawings &amp; checklists</span><span class="pill">Training</span><span class="pill">Asset standardisation</span><span class="pill">Planned PM</span></div>
+ <div class="tblwrap"><table class="cover"><tr><th>Factor</th><th>How it changes repair time</th><th>Source</th></tr>
+ <tr><td>Drawings &amp; checklists</td><td>documented knowledge ⇒ standard procedure ⇒ shorter locate / verify time</td><td>${CH.lec}</td></tr>
+ <tr><td>Training</td><td>skill sets the speed and quality of the repair ⇒ lower MTTR, fewer repeat failures</td><td>${CH.lec}</td></tr>
+ <tr><td>Asset standardisation</td><td>interchangeable parts and tools ⇒ less time getting parts and on the asset</td><td>${CH.lec}</td></tr>
+ <tr><td>Planned preventive maintenance</td><td>structured work ⇒ less unplanned downtime ⇒ higher A<sub>i</sub>, A<sub>o</sub></td><td>${CH.lec}</td></tr>
+ <tr><td>Design: the eight DFM factors above</td><td>accessibility, modularity, fault isolation … shorten access / locate / repair</td><td>${CH.lec}</td></tr>
+ <tr><td>Support: spares, tools, manuals, technicians</td><td>waiting for logistics is part of downtime (MLDT) — it does not affect inherent A<sub>i</sub> but lowers A<sub>o</sub></td><td>${CH.tb}</td></tr>
+ <tr><td>Environment: light, noise, heat, space, safety</td><td>poor working conditions slow the technician and add errors</td><td>${CH.tb}</td></tr></table></div>
  <h3>Repair vs replacement ${CH.demo}</h3>
  <div class="box note">Syllabus: "Repair vs Replacement". L7 rule: <i>establish the maintenance philosophy (repair or dispose) before starting the design.</i> Cost per operating hour decides.</div>
  <div class="grid2"><div><b>Repair</b>${ctl('rr-c1', 'repair cost', 0, 20000, 50, 500, '')}${ctl('rr-d1', 'downtime', 0, 100, 0.5, 8, 'h')}${ctl('rr-l1', 'life gained', 100, 20000, 100, 2000, 'h')}</div>
@@ -158,6 +166,34 @@ ${card('m5-pm', '5.8', 'Preventive maintenance with Weibull wear-out (L5 example
  <canvas class="plot" id="pm-plot"></canvas>
  <span class="src">L5 slides: β = 2, η = 1000 h, 10 000 parts. No PM: 3 023 fail by 600 h. PM at 300 h: expected failures 3 023 → 1 647, saving 1 376; without replacement the chance to survive the next interval given 300 h survived is 76.34%.</span>
 `, CH.lec)}
+
+${card('m5-ram', '5.9', 'RAM study — Monte Carlo availability of a system of repairable units', `
+ <div class="box feyn"><b>🧒 Plain words:</b> A <b>RAM study</b> (Reliability–Availability–Maintainability) asks "if we build the plant like this, how much of the time will it really be running, how much product do we lose, and where is the weak spot?" Formulas get hopeless once units are repaired, so the computer plays the plant's life many times: every unit fails and gets repaired at random, and we count the hours the system was up.</div>
+ <div class="box formula">Inputs: configuration (RBD: k-of-n), failure data (MTBF), repair data (MTTR), mission length &nbsp;|&nbsp; Method: Monte Carlo of up/down timelines &nbsp;|&nbsp; Outputs: A(t), expected production, downtime per year<br>Unit: A<sub>i</sub> = MTBF/(MTBF+MTTR) &nbsp;|&nbsp; system, k needed out of n: A<sub>sys</sub> = Σ<sub>j≥k</sub> C(n,j) A<sub>i</sub><sup>j</sup>(1−A<sub>i</sub>)<sup>n−j</sup> (series k = n, parallel k = 1)</div>
+ <div class="box tip"><b>Exam tip:</b> write the four RAM-study stages — (1) define system and RBD, (2) collect failure and repair data, (3) simulate (Monte Carlo), (4) report availability, production loss and criticality of items; then compare design alternatives (more reliable parts, faster repair, extra standby unit).</div>
+ <div class="row"><button class="btn lec" id="rm-single">single unit MTBF 500, MTTR 20 (A<sub>i</sub> = 0.9615)</button><button class="btn" id="rm-par">2 units in parallel (1 of 2)</button><button class="btn" id="rm-ser">2 units in series</button><button class="btn fill" id="rm-run">▶ run Monte Carlo</button></div>
+ <div class="grid2"><div>${ctl('rm-n', 'number of units n', 1, 6, 1, 2, '')}${ctl('rm-k', 'units needed k (1 = parallel, n = series)', 1, 6, 1, 1, '')}${ctl('rm-mtbf', 'unit MTBF', 50, 5000, 10, 500, 'h')}${ctl('rm-mttr', 'unit MTTR', 1, 200, 1, 20, 'h')}${ctl('rm-T', 'mission / study length', 500, 40000, 100, 8760, 'h')}${ctl('rm-N', 'Monte Carlo runs', 20, 2000, 10, 300, '')}${ctl('rm-rate', 'production rate when up', 1, 1000, 1, 100, 'units/h')}</div>
+ <div><div class="outs">${outBox('rm-ai', 'unit A<sub>i</sub>')}${outBox('rm-as', 'system availability (formula)')}${outBox('rm-sim', 'system availability (Monte Carlo)')}${outBox('rm-dt', 'downtime per 8760 h (formula)')}${outBox('rm-prod', 'expected production over study')}${outBox('rm-se', 'Monte Carlo std. error')}</div></div></div>
+ <canvas class="plot" id="rm-plot" style="height:230px"></canvas>
+ <h3>Compare design alternatives (formula) ${CH.demo}</h3><div class="tblwrap"><table class="cover" id="rm-tbl"></table></div>
+ <span class="src">L8–L9 (RAM study, Monte Carlo of availability, A<sub>i</sub> = MTBF/(MTBF+MTTR)). The k-of-n availability formula and the design-alternative table are textbook / DEMO values (exponential up and repair times, all units start up, repair crew per unit).</span>
+`, CH.lec + ' ' + CH.tb + ' ' + CH.demo)}
+
+${card('m5-mc', '5.10', 'Monte Carlo simulation — random numbers, inverse transform and a worked system', `
+ <div class="box feyn"><b>🧒 Plain words:</b> Monte Carlo = "roll the dice thousands of times and count". To invent a random <i>lifetime</i>, pick a random number U between 0 and 1 (a height), go across to the F(t) curve and drop down to the time axis — that time is one random lifetime. Lifetimes made this way follow exactly the distribution you started with. Build many systems from them, count how many survive, and the fraction is your reliability estimate.</div>
+ <div class="box formula">Steps: ① model ② generate U ~ U(0,1) ③ convert t = F<sup>−1</sup>(U) ④ evaluate the system ⑤ repeat N times ⑥ average<br>Inverse transform: exponential t = −ln(1−U)/λ &nbsp;|&nbsp; Weibull t = γ + η[−ln(1−U)]<sup>1/β</sup> &nbsp;|&nbsp; error of an estimated probability ≈ √(p(1−p)/N)</div>
+ <div class="box tip"><b>Exam tip:</b> draw the F(t) curve with U on the vertical axis and t on the horizontal axis, show the arrow across then down, and state that U and 1−U are both uniform so t = −ln(U)/λ is also used. Say why: no closed form for repairable or complex systems; error falls as 1/√N.</div>
+ <div class="row"><button class="btn" id="mcx-exp">exponential: λ = 0.001/h (β = 1, η = 1000)</button><button class="btn lec" id="mcx-w">Weibull β = 2, η = 1000 h</button><button class="btn" id="mcx-w3">3-par: β = 2, η = 1000, γ = 300</button></div>
+ <div class="grid2"><div>${ctl('mcx-b', 'β (1 = exponential)', 0.3, 6, 0.05, 1, '')}${ctl('mcx-e', 'η = 1/λ', 100, 5000, 10, 1000, 'h')}${ctl('mcx-g', 'γ', 0, 1500, 10, 0, 'h')}${ctl('mcx-u', 'random number U', 0.001, 0.999, 0.001, 0.632, '')}</div>
+ <div><div class="outs">${outBox('mcx-t', 't = F⁻¹(U)')}${outBox('mcx-cnt', 'lifetimes drawn')}${outBox('mcx-mean', 'sample mean')}${outBox('mcx-mttf', 'exact MTTF')}</div>
+  <div class="row"><button class="btn fill" id="mcx-1">draw one random U</button><button class="btn" id="mcx-10">draw 10</button><button class="btn" id="mcx-1k">draw 1 000</button><button class="btn sm" id="mcx-clr">clear</button></div></div></div>
+ <div class="grid2"><canvas class="plot" id="mcx-pF" style="height:230px"></canvas><canvas class="plot" id="mcx-pH" style="height:230px"></canvas></div>
+ <h3>Worked system: k of n identical units, mission time t</h3>
+ <div class="grid2"><div>${ctl('mcx-n', 'units n', 1, 6, 1, 2, '')}${ctl('mcx-k', 'needed k (1 = active parallel)', 1, 6, 1, 1, '')}${ctl('mcx-tm', 'mission time t', 10, 5000, 10, 500, 'h')}${ctl('mcx-N', 'trials N', 10, 200000, 10, 1000, '')}</div>
+ <div><div class="outs">${outBox('mcx-R', 'Monte Carlo R̂')}${outBox('mcx-Rx', 'exact R (binomial)')}${outBox('mcx-se', 'std. error √(p(1−p)/N)')}${outBox('mcx-ok', 'within 2 std. errors?')}</div><div class="row"><button class="btn fill" id="mcx-run">▶ run N trials</button></div></div></div>
+ <span class="src">L8–L9: Monte Carlo simulation (definition, steps, random numbers, use in RAM study). Inverse-transform formulas and the standard error √(p(1−p)/N) are textbook (Kapur &amp; Lamberson; O'Connor). Parallel-pair example with λ = 0.001/h, 500 h: exact R = 2e<sup>−0.5</sup> − e<sup>−1</sup> = 0.8452 (matches PDF card Q5.6).</span>
+`, CH.lec + ' ' + CH.tb + ' ' + CH.demo)}
+
 `;
 
 /* ---------------------------------------------------------------- 5.1 M(t) */
@@ -437,4 +473,69 @@ ${card('m5-pm', '5.8', 'Preventive maintenance with Weibull wear-out (L5 example
   $('#pm-lec').onclick = () => { setV('pm-b', 2); setV('pm-e', 1000); setV('pm-T', 600); setV('pm-tau', 300); setV('pm-N', 10000); update(); };
   update();
 })();
+
+/* ---------------------------------------------------------------- 5.9 RAM study */
+(function () {
+  const sec = $('#m5-ram'), plot = mkPlot('rm-plot', { xlabel: 'time (h)', ylabel: 'system availability A(t)' });
+  const choose = (n, r) => { let c = 1; for (let i = 1; i <= r; i++) c = c * (n - r + i) / i; return c; };
+  const kn = (n, k, a) => { let s_ = 0; for (let j = k; j <= n; j++) s_ += choose(n, j) * Math.pow(a, j) * Math.pow(1 - a, n - j); return s_; };
+  function unit(T, mtbf, mttr) { const tr = []; let t = 0, up = true; while (t < T) { t += up ? rexp(1 / mtbf) : rexp(1 / mttr); tr.push(t); up = !up; } return tr; }
+  function pars() { const n = V('rm-n'); let k = V('rm-k'); if (k > n) { k = n; setV('rm-k', k); } return { n, k, mtbf: V('rm-mtbf'), mttr: V('rm-mttr'), T: V('rm-T'), N: V('rm-N'), rate: V('rm-rate') }; }
+  function formula() {
+    const p = pars(), a = p.mtbf / (p.mtbf + p.mttr), A = kn(p.n, p.k, a);
+    setBox('rm-ai', f4(a), 'MTBF/(MTBF+MTTR)'); setBox('rm-as', f4(A), `Σ C(n,j)a^j(1−a)^(n−j), j ≥ ${p.k}`, 'hi'); setBox('rm-dt', nice((1 - A) * 8760) + ' h', 'per year'); setBox('rm-prod', nice(A * p.rate * p.T), `A × rate × T (${p.rate}/h, ${p.T} h)`);
+    const rows = [['baseline', p.n, p.k, p.mtbf, p.mttr], ['MTBF +25 % (reliability)', p.n, p.k, p.mtbf * 1.25, p.mttr], ['MTTR −25 % (maintainability)', p.n, p.k, p.mtbf, p.mttr * 0.75], ['one extra unit (n + 1)', p.n + 1, p.k, p.mtbf, p.mttr]];
+    el('rm-tbl').innerHTML = '<tr><th>alternative</th><th>n / k</th><th>MTBF</th><th>MTTR</th><th>unit A<sub>i</sub></th><th>system A</th><th>downtime h/yr</th></tr>' + rows.map(r => { const a_ = r[3] / (r[3] + r[4]), A_ = kn(r[1], r[2], a_); return `<tr><td>${r[0]}</td><td>${r[1]} / ${r[2]}</td><td>${nice(r[3])}</td><td>${nice(r[4])}</td><td>${a_.toFixed(4)}</td><td><b>${A_.toFixed(4)}</b></td><td>${nice((1 - A_) * 8760)}</td></tr>`; }).join('');
+    return { p, a, A };
+  }
+  function run() {
+    const { p, A } = formula(), G = 200, acc = new Array(G).fill(0); let tot = 0; const per = [];
+    for (let r = 0; r < p.N; r++) {
+      const u = []; for (let i = 0; i < p.n; i++) u.push(unit(p.T, p.mtbf, p.mttr)); const ptr = new Array(p.n).fill(0); let up = 0;
+      for (let g = 0; g < G; g++) { const x = (g + 0.5) * p.T / G; let c = 0; for (let i = 0; i < p.n; i++) { while (ptr[i] < u[i].length && u[i][ptr[i]] <= x) ptr[i]++; if (ptr[i] % 2 === 0) c++; } if (c >= p.k) { acc[g]++; up++; } }
+      per.push(up / G); tot += up / G;
+    }
+    const A_hat = tot / p.N, sd = Math.sqrt(per.reduce((s_, v) => s_ + (v - A_hat) ** 2, 0) / Math.max(1, p.N - 1)), se = sd / Math.sqrt(p.N);
+    setBox('rm-sim', f4(A_hat), `mean over ${p.N} runs (all units start up)`, 'hi'); setBox('rm-se', f4(se), 'sd of run availability / √N');
+    plot.set([{ name: 'Monte Carlo A(t)', color: '#2457d6', pts: acc.map((c, g) => [(g + 0.5) * p.T / G, c / p.N]) }, { name: `steady state ${A.toFixed(4)}`, color: '#12915b', dash: [5, 4], f: () => A }], { axes: { xmin: 0, xmax: p.T, ymin: Math.max(0, Math.min(A, A_hat) - 0.1), ymax: 1.005 } });
+  }
+  wire(sec, formula);
+  const S = (n, k, mb, mt) => { setV('rm-n', n); setV('rm-k', k); setV('rm-mtbf', mb); setV('rm-mttr', mt); run(); };
+  on('rm-single', 'click', () => S(1, 1, 500, 20)); on('rm-par', 'click', () => S(2, 1, 500, 20)); on('rm-ser', 'click', () => S(2, 2, 500, 20)); on('rm-run', 'click', run);
+  formula(); run();
+})();
+
+/* ---------------------------------------------------------------- 5.10 Monte Carlo */
+(function () {
+  const sec = $('#m5-mc'), pF = mkPlot('mcx-pF', { xlabel: 't (h)', ylabel: 'F(t) — U read on this axis' }), pH = mkPlot('mcx-pH', { xlabel: 't (h)', ylabel: 'density' });
+  let samples = [], last = null;
+  const inv = (u, b, e, g) => g + e * Math.pow(-Math.log(1 - u), 1 / b);
+  const choose = (n, r) => { let c = 1; for (let i = 1; i <= r; i++) c = c * (n - r + i) / i; return c; };
+  function draw() {
+    const b = V('mcx-b'), e = V('mcx-e'), g = V('mcx-g'), D = DIST.weibull({ b, e, g }), u = V('mcx-u'), t = inv(u, b, e, g), tm = g + e * Math.max(2.5, Math.pow(5, 1 / b) * 1.5);
+    setBox('mcx-t', nice(t), `γ + η[−ln(1−${u.toFixed(3)})]^(1/β)`, 'hi'); setBox('mcx-cnt', String(samples.length), 'stored lifetimes'); setBox('mcx-mttf', nice(g + e * gammaFn(1 + 1 / b)), 'γ + ηΓ(1+1/β)');
+    setBox('mcx-mean', samples.length ? nice(samples.reduce((s_, v) => s_ + v, 0) / samples.length) : '—', samples.length ? 'average of drawn lifetimes' : 'draw some lifetimes');
+    const shown = samples.slice(-60).map(v => [v, D.F(v)]);
+    pF.set([{ name: 'F(t)', color: '#d98200', f: D.F }, { name: 'path: U → t', color: '#d23b3b', pts: [[0, u], [t, u], [t, 0]] }, { name: 'drawn lifetimes', color: '#2457d6', dots: true, nolines: true, pts: shown }], { axes: { xmin: 0, xmax: tm, ymin: 0, ymax: 1 }, marks: [{ x: t, y: u, label: 't', color: '#d23b3b' }] });
+    const bins = 24, w = tm / bins, cnt = new Array(bins).fill(0); samples.forEach(v => { const i = Math.floor(v / w); if (i >= 0 && i < bins) cnt[i]++; });
+    const N = Math.max(1, samples.length), fm = Math.max(...cnt.map(c => c / N / w), 1e-9);
+    let fmax = 0; for (let i = 1; i <= 200; i++) { const v = D.f(g + (tm - g) * i / 200); if (isFinite(v)) fmax = Math.max(fmax, v); }
+    pH.set([{ name: 'histogram of drawn lifetimes', color: '#94a3b8', bars: true, bw: w * 0.92, pts: cnt.map((c, i) => [(i + 0.5) * w, c / N / w]) }, { name: 'true f(t)', color: '#2457d6', f: x => { const v = D.f(x); return isFinite(v) ? v : 0; } }], { axes: { xmin: 0, xmax: tm, ymin: 0, ymax: Math.min(Math.max(fm, fmax) * 1.1, 12 / e) } });
+  }
+  const add = n => { const b = V('mcx-b'), e = V('mcx-e'), g = V('mcx-g'); let u = 0; for (let i = 0; i < n; i++) { u = Math.min(0.999, Math.max(0.001, Math.random())); samples.push(inv(u, b, e, g)); } if (n) setV('mcx-u', +u.toFixed(3)); draw(); };
+  wire(sec, e => { if (e && e.target && /mcx-[beg]/.test(e.target.id + (e.target.dataset.r || ''))) samples = []; draw(); });
+  on('mcx-1', 'click', () => add(1)); on('mcx-10', 'click', () => add(10)); on('mcx-1k', 'click', () => add(1000)); on('mcx-clr', 'click', () => { samples = []; draw(); });
+  const L = (b, e, g) => { setV('mcx-b', b); setV('mcx-e', e); setV('mcx-g', g); samples = []; draw(); };
+  on('mcx-exp', 'click', () => L(1, 1000, 0)); on('mcx-w', 'click', () => L(2, 1000, 0)); on('mcx-w3', 'click', () => L(2, 1000, 300));
+  function sys() {
+    const b = V('mcx-b'), e = V('mcx-e'), g = V('mcx-g'), n = V('mcx-n'); let k = V('mcx-k'); if (k > n) { k = n; setV('mcx-k', k); } const tm = V('mcx-tm'), N = V('mcx-N'), r = DIST.weibull({ b, e, g }).R(tm); let ok = 0;
+    for (let i = 0; i < N; i++) { let c = 0; for (let j = 0; j < n; j++) if (inv(Math.random(), b, e, g) > tm) c++; if (c >= k) ok++; }
+    let ex = 0; for (let j = k; j <= n; j++) ex += choose(n, j) * Math.pow(r, j) * Math.pow(1 - r, n - j);
+    const ph = ok / N, se = Math.sqrt(Math.max(ph * (1 - ph), 1e-12) / N);
+    setBox('mcx-R', f4(ph), `${ok} of ${N} trials survived`, 'hi'); setBox('mcx-Rx', f4(ex), `unit R(${tm}) = ${r.toFixed(4)}`); setBox('mcx-se', f4(se), 'error ≈ 1/√N'); setBox('mcx-ok', Math.abs(ph - ex) <= 2 * se + 1e-9 ? 'yes' : 'no (rare)', '|R̂ − R| ≤ 2·se', Math.abs(ph - ex) <= 2 * se + 1e-9 ? 'good' : '');
+  }
+  on('mcx-run', 'click', sys); sec.addEventListener('input', e => { if (/mcx-(n|k|tm|N)/.test(e.target.id + (e.target.dataset.r || ''))) { /* manual run only */ } });
+  setV('mcx-u', 0.632); draw();
+})();
+
 })();

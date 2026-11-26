@@ -6,7 +6,7 @@ const pf = p => p === 0 ? '0' : p >= 0.001 ? (+p.toFixed(5)).toString() : p.toEx
 
 root.innerHTML = `
 <div class="subnav">
- <a href="#m6-concept">6.1 FMEA · FMECA · RCM</a><a href="#m6-fmeca">6.2 FMECA worksheet</a><a href="#m6-fta">6.3 Fault tree</a><a href="#m6-eta">6.4 Event tree</a><a href="#m6-cmp">6.5 FTA vs ETA vs RBD</a>
+ <a href="#m6-concept">6.1 FMEA · FMECA · RCM</a><a href="#m6-fmeca">6.2 FMECA worksheet</a><a href="#m6-fta">6.3 Fault tree</a><a href="#m6-eta">6.4 Event tree</a><a href="#m6-cmp">6.5 FTA vs ETA vs RBD</a><a href="#m6-sod">6.2b S·O·D scales</a><a href="#m6-sym">6.6 FTA symbols</a><a href="#m6-rcm">6.7 RCM 7 steps</a><a href="#m6-rcmv">6.8 RCM vs FMEA/FMECA</a><a href="#m6-cbm">6.9 CBM · P–F</a>
 </div>
 
 ${card('m6-concept', '6.1', 'FMEA vs FMECA vs RCM — the big picture', `
@@ -53,6 +53,24 @@ ${card('m6-fmeca', '6.2', 'FMECA worksheet — add rows, rank by CRN or RPN, col
  <div class="box note">The lecture says "the C in FMECA represents the criticality calculation (MIL-STD-1629)" without a worked example. Here is the standard quantitative form with demo numbers.<br>C<sub>m</sub> = β × α × λ<sub>p</sub> × t: β = probability the effect causes loss of function, α = failure-mode ratio (share of the part's failures that take this mode), λ<sub>p</sub> = part failure rate, t = operating time.</div>
  <div class="tblwrap"><table id="cm-tbl"></table></div>
 `, CH.lec + ' ' + CH.demo)}
+
+${card('m6-sod', '6.2b', 'Severity, Occurrence, Detection scales (1–10) and RPN — pick a rating, read the meaning', `
+ <div class="box feyn"><b>🧒 Plain words:</b> Give each failure three marks out of 10: <b>S</b> — how bad is it if it happens, <b>O</b> — how often will it happen, <b>D</b> — how likely are we to <i>miss</i> it before it hurts (10 = we would never see it coming; 1 = certain to be caught). Multiply: <b>RPN = S × O × D</b>, between 1 and 1000. Biggest RPN gets attention first.</div>
+ <div class="box formula">RPN = S × O × D (1 – 1000) &nbsp;|&nbsp; CRN = S × O (1 – 100, L11 flash-drum example) &nbsp;|&nbsp; after an action: re-score and recompute</div>
+ <div class="box tip"><b>Exam tip:</b> always say that the <i>scales are chosen by the team</i> — quote your own bands. D is "ability to detect": a high D is <b>bad</b>. RPN has ties and exaggerates small differences, so it prioritises investigation; it does not choose the maintenance strategy alone.</div>
+ <div class="row"><button class="btn lec" id="sod-before">Before: seal leak S 7, O 4, D 5 (RPN 140)</button><button class="btn" id="sod-after">After leak sensor + better seal: S 7, O 2, D 2 (RPN 28)</button><button class="btn lec" id="sod-fd">Flash drum overpressure S 10, O 3 (CRN 30)</button></div>
+ <div class="grid2"><div>${ctl('sod-s', 'Severity S', 1, 10, 1, 7, '')}${ctl('sod-o', 'Occurrence O', 1, 10, 1, 4, '')}${ctl('sod-d', 'Detection D', 1, 10, 1, 5, '')}</div>
+ <div><div class="outs">${outBox('sod-rpn', 'RPN = S×O×D')}${outBox('sod-crn', 'CRN = S×O')}${outBox('sod-band', 'priority band')}</div></div></div>
+ <div class="box note" id="sod-txt"></div>
+ <div class="tblwrap"><table class="cover"><tr><th>Rating</th><th>Severity S (lecture L11: production-loss bands)</th><th>Occurrence O (typical textbook)</th><th>Detection D (typical textbook)</th></tr>
+ <tr><td>10</td><td>safety hazard / major equipment damage / loss &gt; 24 h</td><td>very high: ≥ 1 in 2</td><td>absolutely cannot detect (no control)</td></tr>
+ <tr><td>9 – 8</td><td>production loss 12 – 24 h (very high)</td><td>high: 1 in 3 to 1 in 8</td><td>very remote – remote</td></tr>
+ <tr><td>7 – 6</td><td>loss 4 – 12 h (high)</td><td>moderate: 1 in 20 to 1 in 80</td><td>low – moderate</td></tr>
+ <tr><td>5 – 4</td><td>loss &lt; 4 h / high maintenance cost</td><td>low: 1 in 400 to 1 in 2 000</td><td>moderately high – high</td></tr>
+ <tr><td>3 – 2</td><td>no significant effect on production</td><td>remote: 1 in 15 000 to 1 in 150 000</td><td>very high</td></tr>
+ <tr><td>1</td><td>no effect</td><td>very remote: ≤ 1 in 1 500 000</td><td>almost certain to detect (error-proof)</td></tr></table></div>
+ <span class="src">${CH.lec} Severity bands and CRN = S×O: L11 flash-drum slides; RPN = S×O×D: L6. ${CH.tb} The occurrence ratios and the detection wording are typical AIAG-style tables from the textbooks — state your own ranges in the exam.</span>
+`, CH.lec + ' ' + CH.tb)}
 
 ${card('m6-fta', '6.3', 'Fault tree builder and evaluator (AND / OR / voting / XOR)', `
  <div class="box feyn"><b>🧒 Plain words:</b> Pick one bad thing (the <b>top event</b>) and ask "how can this happen?" Break the answer into smaller causes joined by gates. <b>OR</b> gate: <i>any</i> one cause is enough (probabilities nearly add; looks like a series RBD). <b>AND</b> gate: <i>all</i> causes must happen together (probabilities multiply; looks like a parallel RBD). Circles are basic events (root causes), diamonds are undeveloped events. Fault trees live in <b>failure space</b>; RBDs in <b>success space</b>.</div>
@@ -113,6 +131,69 @@ ${card('m6-cmp', '6.5', 'FTA vs ETA vs RBD — the same system seen three ways',
   <tr><td><b>Result</b></td><td>R<sub>s</sub></td><td>P(top), cut sets</td><td>outcome probabilities / frequencies</td></tr></table></div>
  <div class="box tip"><b>Exam tip (L12):</b> "In an RBD we work in success space, in a fault tree in failure space. An FTA is usually easy to convert into an RBD, the reverse is harder for complex graphs. The results are the same if the logic is the same."</div>
 `, CH.lec + ' ' + CH.mse)}
+
+${card('m6-sym', '6.6', 'Fault tree symbols — gates, events, and the transfer / inhibit / priority-AND explained', `
+ <div class="box feyn"><b>🧒 Plain words:</b> A fault tree is a family tree of a disaster drawn upside-down. <b>Gates</b> say how parents combine (AND = all needed, OR = any one enough). <b>Events</b> are boxes, circles and diamonds: a circle is a root cause we have a number for, a diamond is a cause we stopped digging into. The <b>triangle</b> is a "continue on another sheet" button.</div>
+ <div class="box formula">AND: P = ΠP<sub>i</sub> (≙ parallel RBD) &nbsp;|&nbsp; OR: P = 1 − Π(1 − P<sub>i</sub>) (≙ series RBD) &nbsp;|&nbsp; Inhibit: P = P(input)·P(condition) &nbsp;|&nbsp; Priority-AND: P = P(both) × P(correct order)</div>
+ <div class="symgrid" id="sym-grid"></div>
+ <h3>Try the three special symbols</h3>
+ <div class="grid2">
+  <div class="box"><b>Priority AND</b> — fires only if the inputs occur in the stated order (A before B).
+   <div class="row"><label><input type="radio" name="pa-seq" value="ab" data-live checked> A first, then B</label><label><input type="radio" name="pa-seq" value="ba" data-live> B first, then A</label><label><input type="radio" name="pa-seq" value="a" data-live> only A occurs</label></div>
+   <div class="outs">${outBox('pa-and', 'ordinary AND')}${outBox('pa-pand', 'priority AND (A→B)')}</div>
+   <span class="src" id="pa-note"></span></div>
+  <div class="box"><b>Inhibit gate</b> — the input causes the output only if the side condition (ellipse) holds.
+   ${ctl('ih-pi', 'P(input event)', 0, 1, 0.01, 0.2, '')}${ctl('ih-pc', 'P(condition holds)', 0, 1, 0.01, 0.3, '')}
+   <div class="outs">${outBox('ih-out', 'P(output) = P(i)·P(c)')}${outBox('ih-and', 'same as AND of the two')}</div></div>
+ </div>
+ <div class="box"><b>Transfer triangle</b> — the sub-tree "T1" is drawn on sheet 2 but counted on sheet 1.
+  <div class="row"><label><input type="radio" name="tf-sheet" value="1" data-live checked> sheet 1 (top)</label><label><input type="radio" name="tf-sheet" value="2" data-live> sheet 2 (sub-tree T1)</label></div>
+  <div class="grid2"><div class="svgbox" id="tf-svg"></div><div>${ctl('tf-px', 'P(X) basic event', 0, 1, 0.001, 0.02, '')}${ctl('tf-pa', 'P(A)', 0, 1, 0.001, 0.1, '')}${ctl('tf-pb', 'P(B)', 0, 1, 0.001, 0.2, '')}
+  <div class="outs">${outBox('tf-t1', 'P(T1) = P(A)·P(B)')}${outBox('tf-top', 'P(top) = 1 − (1−P(X))(1−P(T1))')}</div></div></div></div>
+ <h3>How to construct a fault tree (7 steps)</h3>
+ <ol><li>Define the top event, system boundary and initial conditions precisely ("no cooling water to reactor", not "failure").</li><li>Ask "what is the <b>immediate</b>, necessary and sufficient cause?" — write it below the top event (a rectangle).</li><li>Connect causes with the right gate: all needed → AND; any one → OR; k of n → voting; condition → inhibit.</li><li>Keep going down one level at a time; do not skip levels, and do not gate to a gate.</li><li>Stop at basic events (circles), undeveloped events (diamonds) or when you reach external events (house).</li><li>Use transfer triangles to continue on another sheet.</li><li>Evaluate: minimal cut sets, then P(top) from basic-event data (OR adds, AND multiplies).</li></ol>
+ <span class="src">${CH.lec} AND, OR, voting OR, XOR, priority AND, basic, undeveloped, intermediate, transfer, conditional symbols (L10–L12; "FTA symbols" slide and the FTD vs RBD slide). ${CH.tb} House and Inhibit symbols and the 7-step construction wording (Kapur &amp; Lamberson; O'Connor). Numbers in the demos are my own.</span>
+`, CH.lec + ' ' + CH.tb)}
+
+${card('m6-rcm', '6.7', 'Reliability Centered Maintenance — walk a component through the 7 RCM questions', `
+ <div class="box feyn"><b>🧒 Plain words:</b> RCM is seven questions asked in order about every important machine, so you only pay for maintenance that matters: (1) what is it <i>for</i>? (2) how can it stop doing that? (3) what makes it stop? (4) what happens then? (5) does it matter — safety, production, money, or is the failure hidden? (6) is there a task that prevents it or warns us early? (7) if not, what is the default — test it, redesign it, or let it run to failure?</div>
+ <div class="box formula">SAE JA1011 questions: 1 functions &amp; performance standards · 2 functional failures · 3 failure modes · 4 failure effects · 5 failure consequences · 6 proactive tasks &amp; intervals · 7 default actions<br>Task test (applicable AND effective). Consequence classes: hidden · safety/environment · operational · non-operational.</div>
+ <div class="box tip"><b>Exam tip:</b> list the seven questions in order with one phrase each, then give a one-line worked example (pump: function → no flow → bearing seizes → loss of cooling → operational → vibration monitoring → …). Do not confuse these with the lecture's 7-step <i>implementation</i> (select system → boundary → description → functions &amp; functional failures → FMEA → logic tree → task selection).</div>
+ <div class="row"><label>Component <select id="rc-comp" data-live style="width:auto"><option value="pump">cooling-water pump (operational)</option><option value="relief">pressure relief valve (hidden / safety)</option><option value="light">office corridor light (non-operational)</option><option value="belt">conveyor belt (wear-out, operational)</option></select></label><span class="pill" id="rc-step-pill"></span></div>
+ <div class="rcm-steps" id="rc-bar"></div>
+ <div class="box" id="rc-body"></div>
+ <div class="row"><button class="btn" id="rc-prev">◀ previous question</button><button class="btn fill" id="rc-next">next question ▶</button><button class="btn sm" id="rc-reset">restart</button></div>
+ <h3>RCM worksheet row built from your answers</h3><div class="tblwrap"><table class="cover" id="rc-sum"></table></div>
+ <div class="box note" id="rc-rec"></div>
+ <span class="src">${CH.lec} The seven RCM questions, consequence classes and the applicable-and-effective test: L10–L12 (SAE JA1011 / JA1012). ${CH.tb} Task names (on-condition, scheduled restoration, discard, failure-finding) from Moubray / JA1012. The four example components and their answers are ${CH.demo}.</span>
+`, CH.lec + ' ' + CH.tb + ' ' + CH.demo)}
+
+${card('m6-rcmv', '6.8', 'RCM vs FMEA / FMECA — bottom-up component thinking vs top-down function thinking', `
+ <div class="box feyn"><b>🧒 Plain words:</b> Take a car. <b>FMEA</b> looks at each part and asks "how could you break?" (brake pad wears, hose splits) — start at the parts, work up. <b>RCM</b> looks at what the car is for ("stop within 40 m") and asks "how could stopping fail, does it matter, and what is the cheapest way to stay safe?" — start at the function, work down. RCM <i>uses</i> an FMEA as its step 5, then adds consequences and a task decision.</div>
+ <div class="box formula">FMEA/FMECA: component → failure mode → effect → rating (S, O, D / CRN / C<sub>m</sub>) → action<br>RCM: function → functional failure → failure mode → effect → <b>consequence</b> → <b>task / default action</b> &nbsp; (RCM ⊃ FMEA + consequence logic + task selection)</div>
+ <div class="box tip"><b>Exam tip:</b> a table with 5–6 rows (direction, focus, purpose, quantification, output, standard) earns the marks; finish with one line: "FMEA/FMECA is an input to RCM; RCM is the maintenance <i>strategy</i> process."</div>
+ <div class="tblwrap"><table class="cover" id="rv-tbl"></table></div>
+ <h3>Self-test: which method?</h3><div id="rv-quiz"></div><div class="row"><span class="pill" id="rv-score"></span><button class="btn sm" id="rv-reset">reset</button></div>
+ <span class="src">${CH.lec} "bottom-up" vs "top-down", focus and purpose rows: L11–L12 FMEA/FMECA vs RCM slide; relationship (FMEA = RCM step 5) from the RCM implementation steps. ${CH.tb} Standards: MIL-STD-1629A / IEC 60812 vs SAE JA1011/JA1012; quantification row.</span>
+`, CH.lec + ' ' + CH.tb)}
+
+${card('m6-cbm', '6.9', 'Condition-Based Monitoring — the P–F curve and how often to inspect', `
+ <div class="box feyn"><b>🧒 Plain words:</b> Most machines do not fail without warning — they get sick first. A bearing wears, then gets noisy, then hot, then seizes. The moment the sickness can <i>first be measured</i> is <b>P</b> (potential failure); the moment it stops working is <b>F</b> (functional failure). The time between is the <b>P–F interval</b> — your warning time. Condition-based monitoring means measuring the right thing often enough to catch the machine between P and F, then fixing it on <i>your</i> schedule.</div>
+ <div class="box formula">P–F interval = t<sub>F</sub> − t<sub>P</sub> &nbsp;|&nbsp; inspect at interval Δ ≤ ½ (P–F) so that at least one check (usually two) falls inside the window &nbsp;|&nbsp; P(detect) ≈ min(1, (P–F)/Δ) &nbsp;|&nbsp; warning left = t<sub>F</sub> − t<sub>detect</sub><br>Chain: asset → failure mode → degradation mechanism → technology → measurement → frequency → limits → diagnosis → action</div>
+ <div class="box tip"><b>Exam tip:</b> draw condition (vertical) against time with points P and F and the P–F interval; add "inspection interval ≤ ½ P–F". Name the technique for the failure mechanism (vibration for bearings, oil analysis for wear debris, thermography for loose electrical joints, ultrasound for leaks) and say CBM suits wear-out (β &gt; 1), not random failures.</div>
+ <div class="row"><button class="btn lec" id="cb-bearing">bearing: P–F 6 weeks, inspect every 3</button><button class="btn" id="cb-late">inspect too rarely: every 10 weeks</button><button class="btn" id="cb-thermo">thermography: P–F 3 weeks, every 1</button><button class="btn" id="cb-oil">oil analysis: P–F 10 weeks, every 4</button></div>
+ <div class="grid2"><div>${ctl('cb-pf', 'P–F interval', 1, 30, 0.5, 6, 'weeks')}${ctl('cb-dt', 'inspection interval Δ', 0.5, 30, 0.5, 3, 'weeks')}${ctl('cb-ph', 'first inspection at', 0, 30, 0.5, 1, 'weeks')}${ctl('cb-k', 'wear speed (curve shape)', 1, 6, 0.5, 3, '')}</div>
+ <div><div class="outs">${outBox('cb-tp', 't<sub>P</sub> (fault first measurable)')}${outBox('cb-n', 'inspections inside P–F')}${outBox('cb-pd', 'P(detect) ≈ min(1, PF/Δ)')}${outBox('cb-res', 'result')}${outBox('cb-warn', 'warning left after detection')}${outBox('cb-rule', 'rule Δ ≤ ½ P–F')}</div></div></div>
+ <canvas class="plot" id="cb-plot" style="height:250px"></canvas>
+ <div class="tblwrap"><table class="cover"><tr><th>Technique</th><th>What it measures</th><th>Typical faults found</th><th>Rough lead time (P–F)</th></tr>
+ <tr><td>Vibration analysis</td><td>acceleration / velocity spectrum, envelope</td><td>imbalance, misalignment, looseness, bearing and gear defects</td><td>weeks – months</td></tr>
+ <tr><td>Oil analysis</td><td>wear debris, viscosity, water, contamination</td><td>abnormal wear, contamination, lubricant failure</td><td>weeks – months</td></tr>
+ <tr><td>Thermography (infrared)</td><td>surface temperature pattern</td><td>loose electrical joints, overload, hot bearings</td><td>days – weeks</td></tr>
+ <tr><td>Acoustic / ultrasonic</td><td>high-frequency sound</td><td>leaks, poor lubrication, early bearing damage, arcing</td><td>weeks</td></tr>
+ <tr><td>Motor current, NDT, process data</td><td>current spectrum, cracks, flow / pressure trends</td><td>rotor bars, cracks, fouling, performance loss</td><td>varies</td></tr></table></div>
+ <span class="src">${CH.lec} CBM chain, closed loop (detection → diagnosis → prognosis → work order → learning) and "P–F analysis" in the RE framework (L6, L12). ${CH.tb} P–F interval definition, the ½ P–F rule and the lead-time ranges (Moubray, RCM II). Curve and numbers are ${CH.demo}.</span>
+`, CH.lec + ' ' + CH.tb + ' ' + CH.demo)}
+
 `;
 
 /* ============================================================ 6.2 FMECA */
@@ -389,4 +470,138 @@ ${card('m6-cmp', '6.5', 'FTA vs ETA vs RBD — the same system seen three ways',
   $('#cm-demo').onclick = () => { setV('cm-p1', 0.1); setV('cm-p2', 0.2); update(); };
   update();
 })();
+
+/* ---------------------------------------------------------------- 6.2b S O D scales */
+(function () {
+  const sec = $('#m6-sod');
+  const SV = ['', 'no effect', 'no significant effect on production', 'no significant effect on production', 'loss < 4 h and / or high maintenance cost', 'loss < 4 h and / or high maintenance cost', 'major disruption, loss 4 – 12 h', 'major disruption, loss 4 – 12 h', 'major disruption, loss 12 – 24 h', 'major disruption, loss 12 – 24 h (or safety hazard)', 'safety hazard / major equipment damage / production loss > 24 h'];
+  const OC = ['', 'very remote: ≤ 1 in 1 500 000', 'remote: 1 in 150 000', 'remote: 1 in 15 000', 'low: 1 in 2 000', 'low: 1 in 400', 'moderate: 1 in 80', 'moderate: 1 in 20', 'high: 1 in 8', 'high: 1 in 3', 'very high: ≥ 1 in 2'];
+  const DT = ['', 'almost certain to detect (error-proof)', 'very high detection', 'high detection', 'moderately high detection', 'moderate detection', 'low detection', 'very low detection', 'remote chance of detection', 'very remote chance', 'absolutely cannot detect (no control)'];
+  function calc() {
+    const S = V('sod-s'), O = V('sod-o'), D = V('sod-d'), rpn = S * O * D, crn = S * O;
+    setBox('sod-rpn', rpn, 'out of 1000', 'hi'); setBox('sod-crn', crn, 'out of 100'); const b = rpn >= 200 ? 'high — act now' : rpn >= 100 ? 'medium — plan action' : 'low — monitor'; setBox('sod-band', b, 'cut-offs 100 / 200 are DEMO', rpn >= 200 ? 'bad' : rpn >= 100 ? 'warn' : 'good');
+    el('sod-txt').innerHTML = `<b>S = ${S}</b>: ${SV[S]}<br><b>O = ${O}</b>: ${OC[O]}<br><b>D = ${D}</b>: ${DT[D]}`;
+  }
+  wire(sec, calc);
+  on('sod-before', 'click', () => { setV('sod-s', 7); setV('sod-o', 4); setV('sod-d', 5); calc(); }); on('sod-after', 'click', () => { setV('sod-s', 7); setV('sod-o', 2); setV('sod-d', 2); calc(); }); on('sod-fd', 'click', () => { setV('sod-s', 10); setV('sod-o', 3); setV('sod-d', 1); calc(); });
+  calc();
+})();
+
+/* ---------------------------------------------------------------- 6.6 FTA symbols */
+(function () {
+  const sec = $('#m6-sym');
+  const line = (d, c) => `<path d="${d}" fill="none" stroke="${c || '#334'}" stroke-width="2"/>`;
+  const AND = '<path d="M14 44 V26 Q14 6 40 6 Q66 6 66 26 V44 Z" fill="#e8f0ff" stroke="#2457d6" stroke-width="2"/>';
+  const OR = '<path d="M12 46 Q40 36 68 46 Q66 10 40 4 Q14 10 12 46 Z" fill="#fff4e0" stroke="#d98200" stroke-width="2"/>';
+  const legs = line('M26 44V58M54 44V58M40 6V-2');
+  const G = {
+    and: AND + legs, or: OR + line('M26 42V58M54 42V58M40 4V-2'),
+    vote: OR + line('M26 42V58M54 42V58M40 4V-2') + '<text x="40" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#7a4d00">k/n</text>',
+    xor: OR + line('M12 53 Q40 43 68 53', '#d98200') + line('M26 50V60M54 50V60M40 4V-2'),
+    pand: AND + line('M14 52 H66 M60 48 L66 52 L60 56', '#2457d6') + line('M26 52V60M54 52V60M40 6V-2'),
+    inh: '<path d="M26 6 H54 L66 26 L54 46 H26 L14 26 Z" fill="#f3e8ff" stroke="#7a3fd0" stroke-width="2"/>' + line('M66 26 H78') + '<ellipse cx="88" cy="26" rx="10" ry="8" fill="#fff" stroke="#7a3fd0" stroke-width="2"/>' + line('M40 46V58M40 6V-2'),
+    basic: '<circle cx="40" cy="30" r="20" fill="#e6f7ee" stroke="#12915b" stroke-width="2"/>' + line('M40 50V58M40 10V-2'),
+    undev: '<path d="M40 8 L66 30 L40 52 L14 30 Z" fill="#fde8e8" stroke="#d23b3b" stroke-width="2"/>' + line('M40 8V-2'),
+    house: '<path d="M40 6 L68 24 V50 H12 V24 Z" fill="#eef2f6" stroke="#556" stroke-width="2"/>' + line('M40 6V-2'),
+    inter: '<rect x="12" y="10" width="56" height="34" rx="3" fill="#eef2f6" stroke="#334" stroke-width="2"/>' + line('M40 44V58M40 10V-2'),
+    trans: '<path d="M40 6 L70 52 H10 Z" fill="#fff9d6" stroke="#a88300" stroke-width="2"/>' + line('M40 6V-2'),
+    cond: '<ellipse cx="40" cy="28" rx="28" ry="18" fill="#fff" stroke="#556" stroke-width="2" stroke-dasharray="4 3"/>' + line('M68 28H78')
+  };
+  const T = [['and', 'AND gate', 'output only if ALL inputs occur', '≙ parallel RBD', 'lec'], ['or', 'OR gate', 'output if ANY input occurs', '≙ series RBD', 'lec'], ['vote', 'Voting OR (k/n)', 'output if k of the n inputs occur', '≙ k-out-of-n', 'lec'], ['xor', 'XOR gate', 'output if EXACTLY ONE input occurs', '', 'lec'], ['pand', 'Priority AND', 'all inputs in a SPECIFIC SEQUENCE (A before B)', 'sequence matters', 'lec'], ['inh', 'Inhibit gate', 'input causes output only if the condition (ellipse) holds', 'P = P(i)·P(c)', 'tb'],
+  ['basic', 'Basic event (circle)', 'fundamental failure with known probability / λ — not developed further', 'one RBD block', 'lec'], ['undev', 'Undeveloped event (diamond)', 'could be expanded but is not (no data / low importance)', '', 'lec'], ['house', 'House event', 'normally ON or OFF (probability 1 or 0): switches a branch in or out', '', 'tb'], ['inter', 'Intermediate / top event (rectangle)', 'output of a gate; TOP = the undesired event analysed', '', 'lec'], ['trans', 'Transfer in / out (triangle)', 'continues the tree on another sheet or sub-tree', '≙ RBD sub-diagram', 'lec'], ['cond', 'Conditional / trigger event (ellipse)', 'states a condition on a gate; a trigger sets a path ON (1) or OFF (0)', '', 'lec']];
+  el('sym-grid').innerHTML = T.map(t => `<div class="symcell"><svg viewBox="-4 -6 106 70" width="100%" height="84">${G[t[0]]}</svg><b>${t[1]}</b><span>${t[2]}</span>${t[3] ? `<i>${t[3]}</i>` : ''}${t[4] === 'lec' ? CH.lec : CH.tb}</div>`).join('');
+  function pa() {
+    const v = document.querySelector('input[name=pa-seq]:checked').value, both = v !== 'a', ok = v === 'ab';
+    setBox('pa-and', both ? 'fires' : 'no output', both ? 'both A and B occurred' : 'B never occurred', both ? 'bad' : 'good'); setBox('pa-pand', ok ? 'fires' : 'no output', ok ? 'A occurred before B' : both ? 'wrong order — no output' : 'B never occurred', ok ? 'bad' : 'good');
+    el('pa-note').textContent = 'Example: standby pump fails ONLY matters if the primary pump failed first; if the standby failed first it was repaired / noticed in time.';
+  }
+  function ih() { const pi = V('ih-pi'), pc = V('ih-pc'); setBox('ih-out', f4(pi * pc), `${pi} × ${pc}`, 'hi'); setBox('ih-and', f4(pi * pc), 'AND of the two events (independent)'); }
+  function tf() {
+    const px = V('tf-px'), pa_ = V('tf-pa'), pb = V('tf-pb'), t1 = pa_ * pb, top = 1 - (1 - px) * (1 - t1), sh = document.querySelector('input[name=tf-sheet]:checked').value;
+    setBox('tf-t1', f4(t1), 'sub-tree T1 (sheet 2)', 'hi'); setBox('tf-top', f4(top), 'OR of X and T1 (sheet 1)', 'hi');
+    const box = (x, y, w, h, t) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#eef2f6" stroke="#334" stroke-width="1.6"/><text x="${x + w / 2}" y="${y + h / 2 + 4}" text-anchor="middle" font-size="11">${t}</text>`;
+    const circ = (x, y, t, p) => `<circle cx="${x}" cy="${y}" r="16" fill="#e6f7ee" stroke="#12915b" stroke-width="1.6"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11">${t}</text><text x="${x}" y="${y + 30}" text-anchor="middle" font-size="9" fill="#555">${p}</text>`;
+    const tri = (x, y, t) => `<path d="M${x} ${y - 16} L${x + 20} ${y + 16} H${x - 20} Z" fill="#fff9d6" stroke="#a88300" stroke-width="1.6"/><text x="${x}" y="${y + 12}" text-anchor="middle" font-size="10">${t}</text>`;
+    const L = (a, b, c, d) => `<path d="M${a} ${b} L${c} ${d}" stroke="#334" stroke-width="1.6" fill="none"/>`;
+    const gate = (x, y, t, c) => `<path d="M${x - 20} ${y + 14} V${y} Q${x - 20} ${y - 18} ${x} ${y - 18} Q${x + 20} ${y - 18} ${x + 20} ${y} V${y + 14} Z" fill="#fff" stroke="${c}" stroke-width="1.6"/><text x="${x}" y="${y + 6}" text-anchor="middle" font-size="11" font-weight="700" fill="${c}">${t}</text>`;
+    el('tf-svg').innerHTML = sh === '1' ? `<svg viewBox="0 0 260 190" width="100%">${box(80, 4, 100, 26, 'Plant trip (top)')}${L(130, 30, 130, 52)}${gate(130, 70, 'OR', '#d98200')}${L(110, 84, 70, 128)}${L(150, 84, 190, 128)}${circ(70, 140, 'X', 'P=' + px)}${tri(190, 140, 'T1')}<text x="190" y="176" text-anchor="middle" font-size="9" fill="#555">to sheet 2 · P=${t1.toFixed(4)}</text></svg>` : `<svg viewBox="0 0 260 190" width="100%">${tri(130, 24, 'T1')}<text x="130" y="58" text-anchor="middle" font-size="9" fill="#555">from sheet 1</text>${L(130, 40, 130, 70)}${gate(130, 88, 'AND', '#2457d6')}${L(110, 102, 70, 128)}${L(150, 102, 190, 128)}${circ(70, 140, 'A', 'P=' + pa_)}${circ(190, 140, 'B', 'P=' + pb)}</svg>`;
+  }
+  wire(sec, e => { pa(); ih(); tf(); }); pa(); ih(); tf();
+})();
+
+/* ---------------------------------------------------------------- 6.7 RCM 7 steps */
+(function () {
+  const sec = $('#m6-rcm');
+  const Q = ['Functions &amp; performance standards', 'Functional failures', 'Failure modes', 'Failure effects', 'Failure consequences', 'Proactive task &amp; interval', 'Default action'];
+  const PQ = ['What is the item supposed to do (standard of performance)?', 'In what ways can it fail to do that?', 'What causes each functional failure?', 'What happens when each failure mode occurs?', 'Why does it matter? (hidden, safety / environment, operational, non-operational)', 'What can be done to predict or prevent the failure? (applicable AND effective)', 'If no proactive task is suitable, what then? (failure-finding, redesign, run-to-failure)'];
+  const P = {
+    pump: { n: 'Cooling-water pump', t: ['Deliver 50 m³/h at ≥ 3 bar to the reactor jacket', 'Delivers no flow; delivers less than 50 m³/h', 'Bearing seizes; impeller worn; shaft seal leaks', 'Jacket temperature rises, high-temp alarm, trip within 10 min, 4 h lost output'], c: 'op', ind: true, age: true, cost: true },
+    relief: { n: 'Pressure relief valve', t: ['Open at 10 bar and relieve the vessel', 'Fails to open at set pressure; opens too early', 'Spring fatigue; seat fouled by polymer; stuck stem', 'Nothing happens until the vessel is over-pressured AND the control system also fails'], c: 'hidden', ind: false, age: false, cost: true },
+    light: { n: 'Office corridor light', t: ['Light the corridor to 100 lux', 'No light', 'Lamp burns out; ballast fails', 'Corridor dim — no safety or output effect; replace when noticed'], c: 'nonop', ind: false, age: false, cost: false },
+    belt: { n: 'Conveyor belt', t: ['Carry 200 t/h at 1.5 m/s', 'Belt stops; belt slips; belt tears', 'Edge fraying and abrasion; splice failure; roller seizes', 'Line stops, 6 h to replace, product loss'], c: 'op', ind: false, age: true, cost: true }
+  };
+  const CL = { hidden: 'Hidden failure', safety: 'Safety / environmental', op: 'Operational', nonop: 'Non-operational' };
+  let step = 0, cur = null, d = null;
+  function load() { cur = el('rc-comp').value; const p = P[cur]; d = { t: p.t.slice(), c: p.c, ind: p.ind, age: p.age, cost: p.cost }; step = 0; render(); }
+  function rec() {
+    let task = null; if (d.ind) task = 'On-condition task (condition-based monitoring): inspect at ≤ ½ P–F interval'; else if (d.age) task = 'Scheduled restoration / discard at the age limit (wear-out)';
+    if (task && (d.c === 'op' || d.c === 'nonop') && !d.cost) task = null;
+    if (task) return { step: 6, text: task, ok: true };
+    if (d.c === 'hidden') return { step: 7, text: 'Default: failure-finding task (functional test) at an interval that gives the required availability', ok: true };
+    if (d.c === 'safety') return { step: 7, text: 'Default: redesign — a safety / environmental failure must be reduced to a tolerable risk', ok: true };
+    return { step: 7, text: 'Default: run-to-failure (no scheduled maintenance) — redesign only if the cost is unacceptable', ok: true };
+  }
+  function render() {
+    el('rc-step-pill').textContent = `question ${step + 1} of 7 — ${Q[step].replace(/&amp;/g, '&')}`;
+    el('rc-bar').innerHTML = Q.map((q, i) => `<button class="rcm-s ${i === step ? 'on' : ''} ${i < step ? 'done' : ''}" data-st="${i}"><b>${i + 1}</b> ${q}</button>`).join('');
+    let b = `<b>Question ${step + 1}: ${PQ[step]}</b>`;
+    if (step < 4) b += `<label>Your answer for “${P[cur].n}”<input type="text" id="rc-in" value="${d.t[step].replace(/"/g, '&quot;')}"></label>`;
+    else if (step === 4) b += `<div class="row"><label>Consequence class <select id="rc-cons">${Object.keys(CL).map(k => `<option value="${k}" ${d.c === k ? 'selected' : ''}>${CL[k]}</option>`).join('')}</select></label></div><div class="box note">Hidden: no direct impact but exposes the plant to multiple failures (needs a failure-finding test). Safety / environmental: could hurt someone or breach a standard — must be reduced to a tolerable risk. Operational: affects output, quality or cost. Non-operational: only the direct repair cost.</div>`;
+    else if (step === 5) b += `<div class="cl"><label><input type="checkbox" id="rc-ind" ${d.ind ? 'checked' : ''}> a condition indicator exists with a usable P–F interval (vibration, oil, temperature …)</label><label><input type="checkbox" id="rc-age" ${d.age ? 'checked' : ''}> failure is age-related (wear-out, β &gt; 1)</label><label><input type="checkbox" id="rc-cost" ${d.cost ? 'checked' : ''}> the task costs less than the failure it prevents (cost-effective)</label></div><div class="box ${rec().step === 6 ? 'good' : 'warn'}"><b>${rec().step === 6 ? 'Proactive task found:' : 'No suitable proactive task →'}</b> ${rec().step === 6 ? rec().text : 'go to question 7'}</div>`;
+    else b += `<div class="box ${rec().step === 7 ? 'warn' : 'good'}"><b>${rec().step === 6 ? 'Not needed — a proactive task was selected at question 6.' : rec().text}</b></div>`;
+    el('rc-body').innerHTML = b;
+    const r = rec(), cons = CL[d.c];
+    el('rc-sum').innerHTML = '<tr><th>1 Function</th><th>2 Functional failure</th><th>3 Failure mode</th><th>4 Effect</th><th>5 Consequence</th><th>6/7 Task</th></tr>' + `<tr><td>${esc(d.t[0])}</td><td>${esc(d.t[1])}</td><td>${esc(d.t[2])}</td><td>${esc(d.t[3])}</td><td id="rc-sum-c">${cons}</td><td id="rc-sum-t">${r.text}</td></tr>`;
+    el('rc-rec').innerHTML = `<b>RCM outcome for ${P[cur].n}:</b> ${r.text}. <span id="rc-q">(decided at question ${r.step})</span>`;
+    el('rc-prev').style.opacity = step === 0 ? 0.45 : 1; el('rc-next').style.opacity = step === 6 ? 0.45 : 1;
+  }
+  sec.addEventListener('input', e => { const t = e.target; if (t.id === 'rc-in') d.t[step] = t.value; });
+  sec.addEventListener('change', e => { const t = e.target; if (t.id === 'rc-cons') d.c = t.value; if (t.id === 'rc-ind') d.ind = t.checked; if (t.id === 'rc-age') d.age = t.checked; if (t.id === 'rc-cost') d.cost = t.checked; if (['rc-cons', 'rc-ind', 'rc-age', 'rc-cost'].includes(t.id)) render(); if (t.id === 'rc-comp') load(); });
+  sec.addEventListener('click', e => { const b = e.target.closest('[data-st]'); if (b) { step = +b.dataset.st; render(); } });
+  on('rc-prev', 'click', () => { if (step > 0) { step--; render(); } }); on('rc-next', 'click', () => { if (step < 6) { step++; render(); } }); on('rc-reset', 'click', load);
+  load();
+})();
+
+/* ---------------------------------------------------------------- 6.8 RCM vs FMEA/FMECA */
+(function () {
+  const sec = $('#m6-rcmv');
+  const R = [['Direction', '“bottom-up” from component failure modes', '“top-down” from system functions'], ['Focus', 'failure modes of the components within a system', 'functions of the system and how they fail in the operating context (functional failures)'], ['Purpose', 'design engineer: how may the design fail · reliability engineer: identify a maintenance strategy', 'identify strategies that preserve the function of the system / asset in its operating context'], ['Quantification', 'FMEA qualitative; FMECA adds criticality (CRN, RPN, C<sub>m</sub>)', 'qualitative; consequence classes decide the task; risk matrix optional'], ['Output', 'ranked failure-mode list, recommended actions', 'a maintenance programme: task, interval, default action per failure mode'], ['Standard', 'MIL-STD-1629A / IEC 60812 (textbook)', 'SAE JA1011 (criteria), JA1012 (guide)'], ['Team / timing', 'design or reliability engineer; early design and operation', 'cross-functional team (facilitator, operations, engineering, craftsman); in service'], ['Relationship', 'one input to RCM (step 5: FMEA)', 'RCM = FMEA + consequence logic + task selection']];
+  el('rv-tbl').innerHTML = '<tr><th>Aspect</th><th>FMEA / FMECA</th><th>RCM</th></tr>' + R.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+  const QZ = [['“Start from each component and ask how it can fail.”', 0], ['“Start from the function in its operating context.”', 1], ['“Produces a Risk Priority Number for each failure mode.”', 0], ['“Classifies each failure as hidden, safety, operational or non-operational.”', 1], ['“Output is a maintenance task and interval.”', 1], ['“Its worksheet is step 5 of the other method.”', 0]];
+  let ans = {};
+  function render() {
+    el('rv-quiz').innerHTML = QZ.map((q, i) => `<div class="box ${ans[i] === undefined ? 'note' : (ans[i] === q[1] ? 'good' : 'warn')}"><b>${i + 1}.</b> ${q[0]}<div class="row"><label style="margin-right:12px"><input type="radio" name="rv${i}" data-q="${i}" data-o="0" ${ans[i] === 0 ? 'checked' : ''}> FMEA / FMECA</label><label><input type="radio" name="rv${i}" data-q="${i}" data-o="1" ${ans[i] === 1 ? 'checked' : ''}> RCM</label></div></div>`).join('');
+    const n = Object.keys(ans).length, ok = Object.keys(ans).filter(i => ans[i] === QZ[i][1]).length; el('rv-score').textContent = `score ${ok} / ${n} answered (of ${QZ.length})`;
+  }
+  sec.addEventListener('change', e => { const t = e.target; if (t.dataset && t.dataset.q !== undefined) { ans[+t.dataset.q] = +t.dataset.o; render(); } });
+  on('rv-reset', 'click', () => { ans = {}; render(); }); render();
+})();
+
+/* ---------------------------------------------------------------- 6.9 CBM P-F */
+(function () {
+  const sec = $('#m6-cbm'), plot = mkPlot('cb-plot', { xlabel: 'time (weeks)', ylabel: 'condition (100 = new, 0 = failed)' });
+  const TF = 40;
+  function calc() {
+    const pf = V('cb-pf'), dt = V('cb-dt'), ph = V('cb-ph'), k = V('cb-k'), tp = TF - pf, cond = t => 100 * (1 - Math.pow(Math.max(0, t) / TF, k)), insp = [];
+    for (let t = ph; t < TF * 1.0; t += dt) insp.push(t); const inside = insp.filter(t => t >= tp && t < TF), det = inside[0];
+    setBox('cb-tp', f2(tp) + ' wk', `t_F = ${TF} wk`); setBox('cb-n', String(inside.length), 'checks between P and F', inside.length >= 2 ? 'good' : inside.length === 1 ? 'warn' : 'bad'); setBox('cb-pd', f2(Math.min(1, pf / dt)), 'chance a random-phase check lands in the window');
+    setBox('cb-res', det !== undefined ? 'DETECTED' : 'MISSED', det !== undefined ? `first caught at week ${f2(det)}` : 'failed between two inspections', det !== undefined ? 'good' : 'bad'); setBox('cb-warn', det !== undefined ? f2(TF - det) + ' wk' : '—', 'time left to plan the repair'); setBox('cb-rule', dt <= pf / 2 + 1e-9 ? 'satisfied' : 'violated', `Δ = ${dt} vs ½ P–F = ${f2(pf / 2)}`, dt <= pf / 2 + 1e-9 ? 'good' : 'bad');
+    plot.set([{ name: 'condition', color: '#2457d6', f: t => cond(Math.min(t, TF)) }, { name: 'inspections', color: '#d98200', dots: true, nolines: true, pts: insp.map(t => [t, cond(t)]) }], { axes: { xmin: 0, xmax: TF + 4, ymin: 0, ymax: 105 }, vlines: [{ x: tp, color: '#12915b', label: 'P' }, { x: TF, color: '#d23b3b', label: 'F' }], marks: det !== undefined ? [{ x: det, y: cond(det), label: 'caught', color: '#12915b' }] : [] });
+  }
+  wire(sec, calc);
+  const S = (pf, dt, ph) => { setV('cb-pf', pf); setV('cb-dt', dt); setV('cb-ph', ph); calc(); };
+  on('cb-bearing', 'click', () => S(6, 3, 1)); on('cb-late', 'click', () => S(6, 10, 1)); on('cb-thermo', 'click', () => S(3, 1, 0.5)); on('cb-oil', 'click', () => S(10, 4, 2));
+  calc();
+})();
+
 })();
